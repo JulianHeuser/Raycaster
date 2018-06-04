@@ -17,7 +17,7 @@ float fov = 1;
 float moveSpeed = 1.0;
 float turnSpeed = 1.0;
 
-float dirX = 0;
+float dirX = 1;
 float dirY = 1;
 
 double rayX = 0.0;
@@ -198,9 +198,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case 0x25:	//Left
+			dirX = (dirX * cos(turnSpeed)) - (dirY * sin(turnSpeed));
+			dirY = (dirY * cos(turnSpeed)) + (dirX * sin(turnSpeed));
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case 0x27:	//Right
+			dirX -= 1;
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		}
@@ -247,9 +250,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			int newRayY = static_cast<int>(floor(rayY));
 			while (grid[newRayY][newRayX] == 0){
 				double oldRay[2] = { rayX, rayY };
-				rayY -= 0.0001;
-				rayX = (((rayX - oldRay[0]) * cos(fov*raysNormalized)) - ((oldRay[1] - rayY) * sin(fov*raysNormalized)));
-				rayY = (((oldRay[1] - rayY) * cos(fov*raysNormalized)) + ((rayX - oldRay[0]) * sin(fov*raysNormalized)));
+				rayY += .001 * (dirY);
+				rayX += .001 * (raysNormalized)* (dirX);
 				newRayY = static_cast<int>(floor(rayY));
 				newRayX = static_cast<int>(floor(rayX));
 
