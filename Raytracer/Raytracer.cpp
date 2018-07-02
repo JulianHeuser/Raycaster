@@ -13,15 +13,18 @@
 float playerX = 3.0;
 float playerY = 3.0;
 
+double planeX = 0;
+double planeY = .66;
+
 float fov = 1;
-float moveSpeed = 1.0;
-float turnSpeed = 1.0;
+float moveSpeed = 0.1;
+float turnSpeed = .1;
 
-float dirX = 1;
-float dirY = 1;
+float dirX = -1;
+float dirY = 0;
 
-double rayX = 0.0;
-double rayY = 0.0;
+//double rayX = 0.0;
+//double rayY = 0.0;
 
 float rays = 0; //How many rays have been drawn
 
@@ -180,26 +183,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_KEYDOWN:
 	{
+		float oldDirX = dirX;
+		float oldPlaneX = planeX;
 		switch (wParam){
 		case 0x57:	//W
-			playerY -= 1;
+			playerY -= moveSpeed;
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case 0x53:	//S
-			playerY += 1;
+			playerY += moveSpeed;
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case 0x41:	//A
-			playerX -= 1;
+			playerX -= moveSpeed;
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case 0x44:	//D
-			playerX += 1;
+			playerX += moveSpeed;
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case 0x25:	//Left
-			dirX = (dirX * cos(turnSpeed)) - (dirY * sin(turnSpeed));
-			dirY = (dirY * cos(turnSpeed)) + (dirX * sin(turnSpeed));
+			dirX = (oldDirX * cos(turnSpeed)) - (dirY * sin(turnSpeed));
+			dirY = (dirY * cos(turnSpeed)) + (oldDirX * sin(turnSpeed));
+
+			planeX = (planeX * cos(turnSpeed)) - (planeY * sin(turnSpeed));
+			planeY = (planeY * cos(turnSpeed)) + (oldPlaneX * sin(turnSpeed));
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case 0x27:	//Right
@@ -241,31 +249,87 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		Ellipse(hdc, mapOffsetX + (playerX * 10), mapOffsetY + (playerY * 10), (mapOffsetX + (playerX * 10)) + 10, (mapOffsetY+ (playerY * 10)+10));	//draw player
 
 		//Raytracing:
-		rayX = playerX; //- fov;
-		rayY = playerY;
+		//rayX = playerX; //- fov;
+		//rayY = playerY;
 		rays = 0;
 		while (rays < width){
 			float raysNormalized = (rays - (width / 2)) / (width / 2);
-			int newRayX = static_cast<int>(floor(rayX));
-			int newRayY = static_cast<int>(floor(rayY));
-			while (grid[newRayY][newRayX] == 0){
-				double oldRay[2] = { rayX, rayY };
-				rayY += .001 * (dirY);
-				rayX += .001 * (raysNormalized)* (dirX);
-				newRayY = static_cast<int>(floor(rayY));
-				newRayX = static_cast<int>(floor(rayX));
 
-				drawLine(mapOffsetX + (oldRay[0]*10), mapOffsetY + (oldRay[1]*10), mapOffsetX + (rayX*10), mapOffsetY + (rayY*10), hWnd);	//Debug Rays
+			float rayDirX = dirX + (raysNormalized * planeX);
+			float rayDirY = dirY + (raysNormalized * planeY);
+
+			//DDA
+			float sideDistX;
+			float sideDistY;
+
+			float deltaDistX = abs(1 / rayDirX);
+			float deltaDistY = abs(1 / rayDirY);
+			
+			int stepX;
+			int stepY;
+
+			int mapX = static_cast<int>(floor(playerX));
+			int mapY = static_cast<int>(floor(playerY));
+
+			int side;
+
+			if (rayDirX < 0){
+				stepX = -1;	
+				sideDistX = (playerX - mapX) * deltaDistX;
+			}
+			else{
+				stepX = 1;
+				sideDistX = (mapX + 1 - playerX) * deltaDistX;
+			}
+			if (rayDirY < 0){
+				stepY = -1;
+				sideDistY = (playerY - mapY) * deltaDistY;
+			}
+			else{
+				stepY = 1;
+				sideDistY = (mapY + 1 - playerY) * deltaDistY;
 			}
 
+			//end DDA
+
+			while (grid[mapY][mapX] == 0){
+				double oldRay[2] = { mapX, mapY };
+
+				if (sideDistX < sideDistY){
+					sideDistX += deltaDistX;
+					mapX += stepX;
+					side = 0;
+				}
+				else{
+					sideDistY += deltaDistY;
+					mapY += stepY;
+					side = 1;
+				}
+
+				drawLine(mapOffsetX + (oldRay[0]*10), mapOffsetY + (oldRay[1]*10), mapOffsetX + (mapX*10), mapOffsetY + (mapY*10), hWnd);	//Debug Rays
+			}
 			//float dist = sqrt(pow(abs(rayX - oldRay[0]), 2) + pow(abs(rayY - oldRay[1]), 2));
-			float dist = sqrt(pow(abs(rayX - playerX), 2) + pow(abs(rayY - playerY), 2));
+			float dist = sqrt(pow(abs(mapX - playerX), 2) + pow(abs(mapY - playerY), 2));
 			float size = (dist / 6)*height;
-			drawLine(rays, size/2, rays, height - (size/2), hWnd);
+
+			float perpWallDist;
+			//drawLine(rays, size/2, rays, height - (size/2), hWnd);
+			if (side == 0){
+				perpWallDist = (mapX - playerX + (1 - stepX) / 2) / rayDirX;
+			}
+			else{
+				perpWallDist = (mapY - playerY + (1 - stepY) / 2) / rayDirY;
+			}
+			int lineHeight = static_cast<int>(height / perpWallDist);
+			int drawStart = -lineHeight / 2 + height / 2;
+			int drawEnd = lineHeight / 2 + height/2;
+
+
+			drawLine(rays, drawStart, rays, drawEnd, hWnd);
+			
+
 			//create_line(rays, size / 2, rays, height - (size / 2));
 			//rayX += interval;
-			rayY = playerY;
-			rayX = playerX;
 			rays += 1;
 		}
 

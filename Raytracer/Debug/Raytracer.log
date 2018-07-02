@@ -1,8 +1,14 @@
 ﻿  Raytracer.cpp
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(166): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(167): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(241): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(258): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(262): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(177): warning C4101: 'Hpen' : unreferenced local variable
-  Raytracer.vcxproj -> C:\Users\Customer PC\Documents\Visual Studio 2013\Projects\Raytracer\Debug\Raytracer.exe
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(20): warning C4305: 'initializing' : truncation from 'double' to 'float'
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(21): warning C4305: 'initializing' : truncation from 'double' to 'float'
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(169): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(170): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(187): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(249): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(258): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(259): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(309): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(309): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(328): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer\raytracer.cpp(180): warning C4101: 'Hpen' : unreferenced local variable
+  Raytracer.vcxproj -> C:\Users\Customer PC\documents\visual studio 2013\Projects\Raytracer\Debug\Raytracer.exe
