@@ -12,9 +12,10 @@
 //Some variables
 float playerX = 3.0;
 float playerY = 3.0;
+float playerRadius = 0.25;
 
-double planeX = 0;
-double planeY = .66;
+float planeX = 0;
+float planeY = .66;
 
 float fov = 1;
 float moveSpeed = 0.1;
@@ -22,6 +23,9 @@ float turnSpeed = .1;
 
 float dirX = -1;
 float dirY = 0;
+
+float xChange = 0;
+float yChange = 0;
 
 //double rayX = 0.0;
 //double rayY = 0.0;
@@ -31,9 +35,9 @@ float rays = 0; //How many rays have been drawn
 float width = 500;
 int height = 500;
 int grid[6][6] =  { { 1, 1, 1, 1, 1, 1 },
+					{ 1, 0, 0, 1, 0, 1 },
 					{ 1, 0, 0, 0, 0, 1 },
-					{ 1, 0, 0, 0, 0, 1 },
-					{ 1, 0, 0, 0, 0, 1 },
+					{ 1, 1, 0, 0, 0, 1 },
 					{ 1, 0, 0, 0, 0, 1 },
 					{ 1, 1, 1, 1, 1, 1 } };
 
@@ -184,22 +188,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 	{
 		float oldDirX = dirX;
+		float oldDirY = dirY;
 		float oldPlaneX = planeX;
+		int realPlayerX = static_cast<int>(floor(playerX));
+		int realPlayerY = static_cast<int>(floor(playerY));
 		switch (wParam){
 		case 0x57:	//W
-			playerY -= moveSpeed;
+			yChange = moveSpeed * dirY;
+			xChange = moveSpeed * dirX;
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case 0x53:	//S
-			playerY += moveSpeed;
+			yChange = -moveSpeed * dirY;
+			xChange = -moveSpeed * dirX;
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case 0x41:	//A
-			playerX -= moveSpeed;
+			xChange = moveSpeed * -dirY;
+			yChange = moveSpeed * dirX;
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case 0x44:	//D
-			playerX += moveSpeed;
+			xChange = moveSpeed * dirY;
+			yChange = moveSpeed * -dirX;
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case 0x25:	//Left
@@ -211,7 +222,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		case 0x27:	//Right
-			dirX -= 1;
+			dirX = (oldDirX * cos(turnSpeed)) + (dirY * sin(turnSpeed));
+			dirY = (dirY * cos(turnSpeed)) - (oldDirX * sin(turnSpeed));
+
+			planeX = (planeX * cos(turnSpeed)) + (planeY * sin(turnSpeed));
+			planeY = (planeY * cos(turnSpeed)) - (oldPlaneX * sin(turnSpeed));
 			InvalidateRect(hWnd, NULL, TRUE);
 			break;
 		}
@@ -234,7 +249,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_PAINT:
 	{
+
+		//Move Character
+		if (xChange < 0){
+			playerRadius = -playerRadius;
+		}
+		else{
+			playerRadius = abs(playerRadius);
+		}
+		if (xChange != 0 && grid[static_cast<int>(floor(playerY))][static_cast<int>(floor(playerX + xChange + playerRadius))] == 0){
+			playerX += xChange;
+			xChange = 0;
+		}
+
+		if (yChange < 0){
+			playerRadius = -playerRadius;
+		}
+		else{
+			playerRadius = abs(playerRadius);
+		}
+		if (yChange != 0 && grid[static_cast<int>(floor(playerY + yChange + playerRadius))][static_cast<int>(floor(playerX))] == 0){
+			playerY += yChange;
+			yChange = 0;
+		}
+
 		hdc = BeginPaint(hWnd, &ps);
+		SelectObject(hdc, GetStockObject(DC_PEN));
+		SelectObject(hdc, GetStockObject(DC_BRUSH));
+		SetDCPenColor(hdc, RGB(0, 0, 255));
+		SetDCBrushColor(hdc, RGB(0, 0, 255));
 		// DRAWING
 		//Map
 		int mapOffsetX = 600;
@@ -246,7 +289,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 			}
 		}
-		Ellipse(hdc, mapOffsetX + (playerX * 10), mapOffsetY + (playerY * 10), (mapOffsetX + (playerX * 10)) + 10, (mapOffsetY+ (playerY * 10)+10));	//draw player
+		Ellipse(hdc, mapOffsetX + (playerX * 10)-5, mapOffsetY + (playerY * 10)-5, (mapOffsetX + (playerX * 10)) + 5, (mapOffsetY+ (playerY * 10)+5));	//draw player
 
 		//Raytracing:
 		//rayX = playerX; //- fov;
@@ -293,7 +336,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//end DDA
 
 			while (grid[mapY][mapX] == 0){
-				double oldRay[2] = { mapX, mapY };
+				float oldRay[2] = { mapX, mapY };
 
 				if (sideDistX < sideDistY){
 					sideDistX += deltaDistX;
@@ -322,9 +365,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			int lineHeight = static_cast<int>(height / perpWallDist);
 			int drawStart = -lineHeight / 2 + height / 2;
-			int drawEnd = lineHeight / 2 + height/2;
-
-
+			int drawEnd = lineHeight / 2 + height / 2;
+			if (side == 0){
+			}
+			else{
+			}
 			drawLine(rays, drawStart, rays, drawEnd, hWnd);
 			
 

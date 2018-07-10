@@ -1,7 +1,14 @@
 ﻿  Raytracer.cpp
-Raytracer.cpp(146): warning C4101: 'Hpen' : unreferenced local variable
-Raytracer.cpp(237): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-Raytracer.cpp(241): warning C4305: '-=' : truncation from 'double' to 'float'
+Raytracer.cpp(18): warning C4305: 'initializing' : truncation from 'double' to 'float'
+Raytracer.cpp(21): warning C4305: 'initializing' : truncation from 'double' to 'float'
+Raytracer.cpp(22): warning C4305: 'initializing' : truncation from 'double' to 'float'
+Raytracer.cpp(173): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+Raytracer.cpp(174): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+Raytracer.cpp(292): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+Raytracer.cpp(339): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+Raytracer.cpp(352): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+Raytracer.cpp(373): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+Raytracer.cpp(184): warning C4101: 'Hpen' : unreferenced local variable
   Generating code
   Finished generating code
   Raytracer.vcxproj -> C:\Users\Customer PC\documents\visual studio 2013\Projects\Raytracer\Release\Raytracer.exe
