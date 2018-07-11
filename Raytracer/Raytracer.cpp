@@ -183,54 +183,60 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HDC hdc;
 	HPEN Hpen;
 
-	switch (message)
-	{
-	case WM_KEYDOWN:
-	{
+
+	//{
+	//case WM_KEY:
+	//{
 		float oldDirX = dirX;
 		float oldDirY = dirY;
 		float oldPlaneX = planeX;
-		int realPlayerX = static_cast<int>(floor(playerX));
-		int realPlayerY = static_cast<int>(floor(playerY));
-		switch (wParam){
-		case 0x57:	//W
+		int realPlayerX = floor(playerX);
+		int realPlayerY = floor(playerY);
+		//switch (wParam){
+		//case 0x57:	//W
+		if (GetAsyncKeyState(0x57)){
 			yChange = moveSpeed * dirY;
 			xChange = moveSpeed * dirX;
 			InvalidateRect(hWnd, NULL, TRUE);
-			break;
-		case 0x53:	//S
+		}
+		//case 0x53:	//S
+		if (GetAsyncKeyState(0x53)){
 			yChange = -moveSpeed * dirY;
 			xChange = -moveSpeed * dirX;
 			InvalidateRect(hWnd, NULL, TRUE);
-			break;
-		case 0x41:	//A
+		}
+		//case 0x41:	//A
+		if (GetAsyncKeyState(0x41)){
 			xChange = moveSpeed * -dirY;
 			yChange = moveSpeed * dirX;
 			InvalidateRect(hWnd, NULL, TRUE);
-			break;
-		case 0x44:	//D
+		}
+		//case 0x44:	//D
+		if (GetAsyncKeyState(0x44)){
 			xChange = moveSpeed * dirY;
 			yChange = moveSpeed * -dirX;
 			InvalidateRect(hWnd, NULL, TRUE);
-			break;
-		case 0x25:	//Left
+		}
+		//case 0x25:	//Left
+		if (GetAsyncKeyState(0x25)){
 			dirX = (oldDirX * cos(turnSpeed)) - (dirY * sin(turnSpeed));
 			dirY = (dirY * cos(turnSpeed)) + (oldDirX * sin(turnSpeed));
 
 			planeX = (planeX * cos(turnSpeed)) - (planeY * sin(turnSpeed));
 			planeY = (planeY * cos(turnSpeed)) + (oldPlaneX * sin(turnSpeed));
 			InvalidateRect(hWnd, NULL, TRUE);
-			break;
-		case 0x27:	//Right
+		}
+		//case 0x27:	//Right
+		if (GetAsyncKeyState(0x27)){
 			dirX = (oldDirX * cos(turnSpeed)) + (dirY * sin(turnSpeed));
 			dirY = (dirY * cos(turnSpeed)) - (oldDirX * sin(turnSpeed));
 
 			planeX = (planeX * cos(turnSpeed)) + (planeY * sin(turnSpeed));
 			planeY = (planeY * cos(turnSpeed)) - (oldPlaneX * sin(turnSpeed));
 			InvalidateRect(hWnd, NULL, TRUE);
-			break;
 		}
-	}
+	switch (message)
+	{
 	case WM_COMMAND:
 		wmId = LOWORD(wParam);
 		wmEvent = HIWORD(wParam);
@@ -257,7 +263,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		else{
 			playerRadius = abs(playerRadius);
 		}
-		if (xChange != 0 && grid[static_cast<int>(floor(playerY))][static_cast<int>(floor(playerX + xChange + playerRadius))] == 0){
+		if (xChange != 0 && grid[(int)floor(playerY)][(int)floor(playerX + xChange + playerRadius)] == 0){
 			playerX += xChange;
 			xChange = 0;
 		}
@@ -268,7 +274,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		else{
 			playerRadius = abs(playerRadius);
 		}
-		if (yChange != 0 && grid[static_cast<int>(floor(playerY + yChange + playerRadius))][static_cast<int>(floor(playerX))] == 0){
+		if (yChange != 0 && grid[(int)floor(playerY + yChange + playerRadius)][(int)floor(playerX)] == 0){
 			playerY += yChange;
 			yChange = 0;
 		}
