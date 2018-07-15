@@ -1,0 +1,8 @@
+﻿  main.cpp
+main.cpp(1): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+main.cpp(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  Generating code
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer2\raytracer2\main.cpp(7): warning C4715: 'WindowProc' : not all control paths return a value
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer2\raytracer2\main.cpp(33): warning C4715: 'wWinMain' : not all control paths return a value
+  Finished generating code
+  Raytracer2.vcxproj -> c:\users\customer pc\documents\visual studio 2013\Projects\Raytracer2\Release\Raytracer2.exe
