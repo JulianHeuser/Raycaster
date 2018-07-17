@@ -55,11 +55,6 @@ void  Loader::Unload(int level){
 }
 
 void Loader::Update(){
-
-}
-
-void  Loader::Render(Graphics* gfx){
-
 	//Debugging
 	if (GetAsyncKeyState(VK_ADD)){
 		Load(currentLevel + 1);
@@ -111,28 +106,29 @@ void  Loader::Render(Graphics* gfx){
 	}
 
 
-	//Move Character
+	//Check for collision and Move Character
+	playerRadiusX = abs(playerRadiusX);
+	playerRadiusY = abs(playerRadiusY);
 	if (xChange < 0){
-		playerRadius = -playerRadius;
+		playerRadiusX = -playerRadiusX;
 	}
-	else{
-		playerRadius = abs(playerRadius);
+	if (yChange < 0){
+		playerRadiusY = -playerRadiusY;
 	}
-	if (xChange != 0 && grid[(int)floor(playerY)][(int)floor(playerX + xChange + playerRadius)] == 0){
+	if (yChange != 0 && !grid[(int)floor(playerY + yChange + playerRadiusY)][(int)floor(playerX)] > 0){
+		playerY += yChange;
+	}
+	if (xChange != 0 && !grid[(int)floor(playerY)][(int)floor(playerX + xChange + playerRadiusX)] > 0){
 		playerX += xChange;
-		xChange = 0;
 	}
 
-	if (yChange < 0){
-		playerRadius = -playerRadius;
-	}
-	else{
-		playerRadius = abs(playerRadius);
-	}
-	if (yChange != 0 && grid[(int)floor(playerY + yChange + playerRadius)][(int)floor(playerX)] == 0){
-		playerY += yChange;
-		yChange = 0;
-	}
+	xChange = 0;
+	yChange = 0;
+}
+
+void  Loader::Render(Graphics* gfx){
+
+
 
 	//Render
 	gfx->BeginDraw();
@@ -207,8 +203,9 @@ void  Loader::Render(Graphics* gfx){
 				side = 1;
 			}
 
-			gfx->drawLine(mapOffsetX + (oldRay[0] * 10), mapOffsetY + (oldRay[1] * 10), mapOffsetX + (mapX * 10), mapOffsetY + (mapY * 10), 255, 255, 255, 1);	//Debug Rays
+			//gfx->drawLine(mapOffsetX + (oldRay[0] * 10), mapOffsetY + (oldRay[1] * 10), mapOffsetX + (mapX * 10), mapOffsetY + (mapY * 10), 255, 255, 255, 1);	//Debug Rays
 		}
+		gfx->drawLine(mapOffsetX + (playerX * 10), mapOffsetY + (playerY * 10), mapOffsetX + (mapX * 10), mapOffsetY + (mapY * 10), 255, 255, 255, 1);	//Debug Rays
 		//float dist = sqrt(pow(abs(rayX - oldRay[0]), 2) + pow(abs(rayY - oldRay[1]), 2));
 		float dist = sqrt(pow(abs(mapX - playerX), 2) + pow(abs(mapY - playerY), 2));
 		float size = (dist / 6)*height;

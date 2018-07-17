@@ -6,7 +6,8 @@ class Loader : public GameLevel{
 	//Variables needed for basic rendering
 	float playerX = 3.0;
 	float playerY = 3.0;
-	float playerRadius = 0.25;
+	float playerRadiusX = 0.25;
+	float playerRadiusY = 0.25;
 
 	float planeX = 0;
 	float planeY = .66f;
