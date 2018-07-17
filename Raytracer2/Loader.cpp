@@ -50,6 +50,46 @@ void Loader::Update(){
 
 void  Loader::Render(Graphics* gfx){
 
+	float oldDirX = dirX;
+	float oldDirY = dirY;
+	float oldPlaneX = planeX;
+	int realPlayerX = floor(playerX);
+	int realPlayerY = floor(playerY);
+	if (GetAsyncKeyState(0x57)){
+		yChange = moveSpeed * dirY;
+		xChange = moveSpeed * dirX;
+	}
+	//case 0x53:	//S
+	if (GetAsyncKeyState(0x53)){
+		yChange = -moveSpeed * dirY;
+		xChange = -moveSpeed * dirX;
+	}
+	//case 0x41:	//A
+	if (GetAsyncKeyState(0x41)){
+		xChange = moveSpeed * -dirY;
+		yChange = moveSpeed * dirX;
+	}
+	//case 0x44:	//D
+	if (GetAsyncKeyState(0x44)){
+		xChange = moveSpeed * dirY;
+		yChange = moveSpeed * -dirX;
+	}
+	//case 0x25:	//Left
+	if (GetAsyncKeyState(0x25)){
+		dirX = (oldDirX * cos(turnSpeed)) - (dirY * sin(turnSpeed));
+		dirY = (dirY * cos(turnSpeed)) + (oldDirX * sin(turnSpeed));
+
+		planeX = (planeX * cos(turnSpeed)) - (planeY * sin(turnSpeed));
+		planeY = (planeY * cos(turnSpeed)) + (oldPlaneX * sin(turnSpeed));
+	}
+	//case 0x27:	//Right
+	if (GetAsyncKeyState(0x27)){
+		dirX = (oldDirX * cos(turnSpeed)) + (dirY * sin(turnSpeed));
+		dirY = (dirY * cos(turnSpeed)) - (oldDirX * sin(turnSpeed));
+
+		planeX = (planeX * cos(turnSpeed)) + (planeY * sin(turnSpeed));
+		planeY = (planeY * cos(turnSpeed)) - (oldPlaneX * sin(turnSpeed));
+	}
 
 
 	//Move Character
@@ -165,7 +205,12 @@ void  Loader::Render(Graphics* gfx){
 		int lineHeight = static_cast<int>(height / perpWallDist);
 		int drawStart = -lineHeight / 2 + height / 2;
 		int drawEnd = lineHeight / 2 + height / 2;
-		gfx->drawLine(rays, drawStart, rays, drawEnd, 255, 255, 255, 1);
+		if (side == 0){
+			gfx->drawLine(rays, drawStart, rays, drawEnd, 255, 255, 255, 1);
+		}
+		else{
+			gfx->drawLine(rays, drawStart, rays, drawEnd, 100, 100, 100, 1);
+		}
 
 
 		//create_line(rays, size / 2, rays, height - (size / 2));

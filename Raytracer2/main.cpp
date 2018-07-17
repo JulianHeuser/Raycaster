@@ -10,52 +10,6 @@ Graphics* graphics;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam){
 	if (uMsg == WM_DESTROY){ PostQuitMessage(0); return 0; }
-	
-	//GameLoader::SwitchLevel(new Loader(), 2); -Switching level syntax
-
-	/*float oldDirX = dirX;
-	float oldDirY = dirY;
-	float oldPlaneX = planeX;
-	int realPlayerX = floor(playerX);
-	int realPlayerY = floor(playerY);
-	//switch (wParam){
-	//case 0x57:	//W
-	if (GetAsyncKeyState(0x57)){
-		yChange = moveSpeed * dirY;
-		xChange = moveSpeed * dirX;
-	}
-	//case 0x53:	//S
-	if (GetAsyncKeyState(0x53)){
-		yChange = -moveSpeed * dirY;
-		xChange = -moveSpeed * dirX;
-	}
-	//case 0x41:	//A
-	if (GetAsyncKeyState(0x41)){
-		xChange = moveSpeed * -dirY;
-		yChange = moveSpeed * dirX;
-	}
-	//case 0x44:	//D
-	if (GetAsyncKeyState(0x44)){
-		xChange = moveSpeed * dirY;
-		yChange = moveSpeed * -dirX;
-	}
-	//case 0x25:	//Left
-	if (GetAsyncKeyState(0x25)){
-		dirX = (oldDirX * cos(turnSpeed)) - (dirY * sin(turnSpeed));
-		dirY = (dirY * cos(turnSpeed)) + (oldDirX * sin(turnSpeed));
-
-		planeX = (planeX * cos(turnSpeed)) - (planeY * sin(turnSpeed));
-		planeY = (planeY * cos(turnSpeed)) + (oldPlaneX * sin(turnSpeed));
-	}
-	//case 0x27:	//Right
-	if (GetAsyncKeyState(0x27)){
-		dirX = (oldDirX * cos(turnSpeed)) + (dirY * sin(turnSpeed));
-		dirY = (dirY * cos(turnSpeed)) - (oldDirX * sin(turnSpeed));
-
-		planeX = (planeX * cos(turnSpeed)) + (planeY * sin(turnSpeed));
-		planeY = (planeY * cos(turnSpeed)) - (oldPlaneX * sin(turnSpeed));
-	}
-	*/
 	return DefWindowProc(hwnd,uMsg,wParam,lParam);
 }
 
