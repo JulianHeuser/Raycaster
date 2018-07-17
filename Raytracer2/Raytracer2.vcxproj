@@ -65,14 +65,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GameLoader.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Loader.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameLevel.h" />
-    <ClInclude Include="GameLoader.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Loader.h" />
   </ItemGroup>

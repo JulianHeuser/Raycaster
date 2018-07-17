@@ -1,8 +1,12 @@
 #include "Loader.h"
-#include "GameLoader.h"
 #include "Graphics.h"
 #include <math.h>
 #include "Levels.h"
+
+int Loader::currentLevel;
+bool Loader::Loading;
+
+
 //Levels
 int level1[6][6] = { { 1, 1, 1, 1, 1, 1 },
 { 1, 0, 0, 0, 0, 1 },
@@ -19,8 +23,10 @@ int level2[6][6] = { { 1, 1, 1, 1, 1, 1 },
 { 1, 0, 0, 0, 0, 1 },
 { 1, 1, 1, 1, 1, 1 } };
 
-void  Loader::Load(int level){
-	//Levels
+
+void Loader::Load(int level){
+	Loading = true;
+	Unload(currentLevel);
 	switch (level)
 	{
 	case(1) :
@@ -40,15 +46,28 @@ void  Loader::Load(int level){
 	default:
 		break;
 	}
+	currentLevel = level;
+	Loading = false;
 }
 
-void  Loader::Unload(){}
+void  Loader::Unload(int level){
+	
+}
 
 void Loader::Update(){
 
 }
 
 void  Loader::Render(Graphics* gfx){
+
+	//Debugging
+	if (GetAsyncKeyState(VK_ADD)){
+		Load(currentLevel + 1);
+	}
+	if (GetAsyncKeyState(VK_SUBTRACT)){
+		Load(currentLevel - 1);
+	}
+	//
 
 	float oldDirX = dirX;
 	float oldDirY = dirY;

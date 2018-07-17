@@ -29,8 +29,10 @@ class Loader : public GameLevel{
 	int grid[6][6];
 
 public:
+	static int currentLevel;
+	static bool Loading;
 	void Load(int level) override;
-	void Unload() override;
+	void Unload(int level) override;
 	void Update() override;
 	void Render(Graphics* gfx) override;
 };

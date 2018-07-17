@@ -1,6 +1,7 @@
 #include "GameLoader.h"
 #include "Graphics.h"
 
+/*
 GameLevel* GameLoader::currentLevel;
 bool GameLoader::Loading;
 
@@ -34,3 +35,4 @@ void GameLoader::Update(){
 	if (Loading) return;
 	currentLevel->Update();
 }
+*/

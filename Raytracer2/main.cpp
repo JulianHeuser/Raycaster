@@ -2,7 +2,6 @@
 #include "Graphics.h";
 #include <math.h>;
 #include "Loader.h"
-#include "GameLoader.h"
 Graphics* graphics;
 
 
@@ -37,8 +36,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 	}
 
 	ShowWindow(windowHandle, cCmdShow);
-
-	GameLoader::LoadInitialLevel(new Loader());
+	Loader loader;
+	loader.Load(1);
 
 	MSG msg;
 	msg.message = WM_NULL;
@@ -48,8 +47,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 			DispatchMessage(&msg);
 		}
 		else{
-			GameLoader::Update();
-			GameLoader::Render(graphics);
+			loader.Update();
+			loader.Render(graphics);
 
 		}
 	}

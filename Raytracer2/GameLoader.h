@@ -1,10 +1,9 @@
 #pragma once
 
 #include "GameLevel.h"
-
+/*
 class GameLoader{
 	GameLoader(){}
-	static GameLevel* currentLevel;
 public:
 	static bool Loading;
 
@@ -16,3 +15,4 @@ public:
 	static void Render(Graphics* gfx);
 	static void Update();
 };
+*/
