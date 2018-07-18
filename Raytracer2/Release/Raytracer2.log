@@ -1,8 +1,20 @@
-﻿  main.cpp
+﻿  Renderer.cpp
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\Renderer.h(16): warning C4305: 'initializing' : truncation from 'double' to 'float'
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\Renderer.h(17): warning C4305: 'initializing' : truncation from 'double' to 'float'
+Renderer.cpp(70): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+Renderer.cpp(71): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
+Renderer.cpp(118): warning C4804: '>' : unsafe use of type 'bool' in operation
+Renderer.cpp(121): warning C4804: '>' : unsafe use of type 'bool' in operation
+Renderer.cpp(193): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
+Renderer.cpp(208): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+Renderer.cpp(225): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+Renderer.cpp(228): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+  main.cpp
 main.cpp(1): warning C4067: unexpected tokens following preprocessor directive - expected a newline
 main.cpp(2): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+main.cpp(3): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\Renderer.h(16): warning C4305: 'initializing' : truncation from 'double' to 'float'
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\Renderer.h(17): warning C4305: 'initializing' : truncation from 'double' to 'float'
   Generating code
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer2\raytracer2\main.cpp(7): warning C4715: 'WindowProc' : not all control paths return a value
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer2\raytracer2\main.cpp(33): warning C4715: 'wWinMain' : not all control paths return a value
   Finished generating code
-  Raytracer2.vcxproj -> c:\users\customer pc\documents\visual studio 2013\Projects\Raytracer2\Release\Raytracer2.exe
+  Raytracer2.vcxproj -> C:\Users\Customer PC\Documents\Visual Studio 2013\Projects\Raytracer\Release\Raytracer2.exe

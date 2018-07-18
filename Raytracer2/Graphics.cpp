@@ -1,5 +1,7 @@
 #include "Graphics.h"
 
+#pragma comment(lib, "d2d1")
+
 Graphics::Graphics(){
 	factory = NULL;
 	renderTarget = NULL;

@@ -1,7 +1,7 @@
 #include <Windows.h>;
 #include "Graphics.h";
 #include <math.h>;
-#include "Loader.h"
+#include "Renderer.h"
 Graphics* graphics;
 
 
@@ -36,7 +36,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 	}
 
 	ShowWindow(windowHandle, cCmdShow);
-	Loader loader;
+	Renderer loader;
 	loader.Load(1);
 
 	MSG msg;
