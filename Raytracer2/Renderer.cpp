@@ -1,11 +1,9 @@
 #include "Renderer.h"
 #include "Graphics.h"
 #include <math.h>
-#include "Levels.h"
 
 int Renderer::currentLevel;
 bool Renderer::Loading;
-
 
 //Levels
 int level1[6][6] = { { 1, 1, 1, 1, 1, 1 },
@@ -23,10 +21,35 @@ int level2[6][6] = { { 1, 1, 1, 1, 1, 1 },
 { 1, 0, 0, 0, 0, 1 },
 { 1, 1, 1, 1, 1, 1 } };
 
+void Renderer::Reset(){
+	playerX = 3.0;
+	playerY = 3.0;
+	playerRadiusX = 0.25;
+	playerRadiusY = 0.25;
+
+	planeX = 0;
+	planeY = .66f;
+
+	fov = 1;
+	moveSpeed = 0.1;
+	turnSpeed = .1;
+
+	dirX = -1;
+	dirY = 0;
+
+	xChange = 0;
+	yChange = 0;
+
+	rays = 0; //How many rays have been drawn
+
+	width = 500;
+	height = 500;
+
+}
 
 void Renderer::Load(int level){
-	Loading = true;
-	Unload(currentLevel);
+	Reset();
+	currentLevel = level;
 	switch (level)
 	{
 	case(1) :
@@ -35,6 +58,7 @@ void Renderer::Load(int level){
 				grid[i][o] = level1[i][o];
 			}
 		}
+		Loading = false;
 		break;
 	case(2) :
 		for (int i = 0; i < 6; i++){
@@ -42,27 +66,19 @@ void Renderer::Load(int level){
 				grid[i][o] = level2[i][o];
 			}
 		}
+		Loading = false;
 		break;
 	default:
+		Loading = false;
 		break;
 	}
-	currentLevel = level;
-	Loading = false;
 }
 
-void  Renderer::Unload(int level){
+void  Renderer::Unload(){
 	
 }
 
 void Renderer::Update(){
-	//Debugging
-	if (GetAsyncKeyState(VK_ADD)){
-		Load(currentLevel + 1);
-	}
-	if (GetAsyncKeyState(VK_SUBTRACT)){
-		Load(currentLevel - 1);
-	}
-	//
 
 	float oldDirX = dirX;
 	float oldDirY = dirY;

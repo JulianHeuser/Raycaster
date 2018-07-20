@@ -1,8 +1,10 @@
 #pragma once
+#include "Graphics.h"
 
-#include "Gamelevel.h"
 
-class Renderer : public GameLevel{
+class Renderer{
+
+
 	//Variables needed for basic rendering
 	float playerX = 3.0;
 	float playerY = 3.0;
@@ -32,8 +34,10 @@ class Renderer : public GameLevel{
 public:
 	static int currentLevel;
 	static bool Loading;
-	void Load(int level) override;
-	void Unload(int level) override;
-	void Update() override;
-	void Render(Graphics* gfx) override;
+
+	void Load(int level);
+	void Reset();
+	void Unload();
+	void Render(Graphics* gfx);
+	void Update(); 
 };

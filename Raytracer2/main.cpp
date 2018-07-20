@@ -1,7 +1,7 @@
 #include <Windows.h>;
 #include "Graphics.h";
 #include <math.h>;
-#include "Renderer.h"
+#include "Renderer.h";
 Graphics* graphics;
 
 
@@ -36,19 +36,28 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 	}
 
 	ShowWindow(windowHandle, cCmdShow);
-	Renderer loader;
-	loader.Load(1);
+	Renderer renderer;
+	renderer.Load(1);
 
 	MSG msg;
 	msg.message = WM_NULL;
 
 	while (msg.message != WM_QUIT){
+		static Renderer* ren;
+		//Debugging
+		if (GetAsyncKeyState(VK_ADD)){
+			renderer.Load(renderer.currentLevel + 1);
+		}
+		if (GetAsyncKeyState(VK_SUBTRACT)){
+			renderer.Load(renderer.currentLevel - 1);
+		}
+		//
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
 			DispatchMessage(&msg);
 		}
 		else{
-			loader.Update();
-			loader.Render(graphics);
+			renderer.Update();
+			renderer.Render(graphics);
 
 		}
 	}
