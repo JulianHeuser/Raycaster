@@ -19,4 +19,5 @@ public:
 	void clearScreen(float r, float g, float b);
 	void drawCircle(float x, float y, float radius, float r, float g, float b, float a);
 	void drawLine(float x, float y, float x2, float y2, float r, float g, float b, float a);
+	void drawRect(float x, float y, float x2, float y2, float r, float g, float b, float a);
 };

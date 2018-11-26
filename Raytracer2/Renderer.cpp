@@ -120,11 +120,16 @@ void Renderer::Update(){
 		planeX = (planeX * cos(turnSpeed)) + (planeY * sin(turnSpeed));
 		planeY = (planeY * cos(turnSpeed)) - (oldPlaneX * sin(turnSpeed));
 	}
-
+	if (GetAsyncKeyState(0x51)) {	//Q
+		stretchX -= .1;
+	}
+	if (GetAsyncKeyState(0x45)) {	//E
+		stretchX += .1;
+	}
 
 	//Check for collision and Move Character
-	playerRadiusX = abs(playerRadiusX);
-	playerRadiusY = abs(playerRadiusY);
+	playerRadiusX = fabs(playerRadiusX);
+	playerRadiusY = fabs(playerRadiusY);
 	if (xChange < 0){
 		playerRadiusX = -playerRadiusX;
 	}
@@ -155,7 +160,7 @@ void  Renderer::Render(Graphics* gfx){
 	for (int y = 0; y < 6; y++){
 		for (int x = 0; x < 6; x++){
 			if (grid[y][x] > 0){
-				//Rectangle(hdc, mapOffsetX + (x * 10), mapOffsetY + (y * 10), (mapOffsetX + (x * 10)) + 10, (mapOffsetY + (y * 10)) + 10);
+				gfx->drawRect( mapOffsetX + (x * 10), mapOffsetY + (y * 10), (mapOffsetX + (x * 10)) + 10, (mapOffsetY + (y * 10)) + 10, 0,0,0,1 );
 			}
 		}
 	}
@@ -175,8 +180,8 @@ void  Renderer::Render(Graphics* gfx){
 		float sideDistX;
 		float sideDistY;
 
-		float deltaDistX = abs(1 / rayDirX);
-		float deltaDistY = abs(1 / rayDirY);
+		float deltaDistX = fabs(1 / rayDirX);
+		float deltaDistY = fabs(1 / rayDirY);
 
 		int stepX;
 		int stepY;
@@ -222,17 +227,13 @@ void  Renderer::Render(Graphics* gfx){
 			//gfx->drawLine(mapOffsetX + (oldRay[0] * 10), mapOffsetY + (oldRay[1] * 10), mapOffsetX + (mapX * 10), mapOffsetY + (mapY * 10), 255, 255, 255, 1);	//Debug Rays
 		}
 		gfx->drawLine(mapOffsetX + (playerX * 10), mapOffsetY + (playerY * 10), mapOffsetX + (mapX * 10), mapOffsetY + (mapY * 10), 255, 255, 255, 1);	//Debug Rays
-		//float dist = sqrt(pow(abs(rayX - oldRay[0]), 2) + pow(abs(rayY - oldRay[1]), 2));
-		float dist = sqrt(pow(abs(mapX - playerX), 2) + pow(abs(mapY - playerY), 2));
-		float size = (dist / 6)*height;
 
 		float perpWallDist;
-		//drawLine(rays, size/2, rays, height - (size/2), hWnd);
 		if (side == 0){
-			perpWallDist = (mapX - playerX + (1 - stepX) / 2) / rayDirX;
+			perpWallDist = ((mapX - playerX + (1 - stepX) / 2)  / rayDirX);
 		}
 		else{
-			perpWallDist = (mapY - playerY + (1 - stepY) / 2) / rayDirY;
+			perpWallDist = ((mapY - playerY + (1 - stepY) / 2) / rayDirY);
 		}
 		int lineHeight = static_cast<int>(height / perpWallDist);
 		int drawStart = -lineHeight / 2 + height / 2;
@@ -244,12 +245,7 @@ void  Renderer::Render(Graphics* gfx){
 			gfx->drawLine(rays, drawStart, rays, drawEnd, 100, 100, 100, 1);
 		}
 
-
-		//create_line(rays, size / 2, rays, height - (size / 2));
-		//rayX += interval;
 		rays += 1;
-
-
 	}
 	gfx->EndDraw();
 }

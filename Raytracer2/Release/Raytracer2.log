@@ -1,16 +1,35 @@
 ﻿  Renderer.cpp
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\Renderer.h(18): warning C4305: 'initializing' : truncation from 'double' to 'float'
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\Renderer.h(19): warning C4305: 'initializing' : truncation from 'double' to 'float'
-Renderer.cpp(34): warning C4305: '=' : truncation from 'double' to 'float'
-Renderer.cpp(35): warning C4305: '=' : truncation from 'double' to 'float'
-Renderer.cpp(86): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-Renderer.cpp(87): warning C4244: 'initializing' : conversion from 'float' to 'int', possible loss of data
-Renderer.cpp(134): warning C4804: '>' : unsafe use of type 'bool' in operation
-Renderer.cpp(137): warning C4804: '>' : unsafe use of type 'bool' in operation
-Renderer.cpp(209): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
-Renderer.cpp(224): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-Renderer.cpp(241): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
-Renderer.cpp(244): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.h(20): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.h(21): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(34): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(35): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(86): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(87): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(109): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(110): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(112): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(113): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(117): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(118): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(120): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(121): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(124): warning C4305: '-=': truncation from 'double' to 'float'
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(127): warning C4305: '+=': truncation from 'double' to 'float'
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(131): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(132): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(139): warning C4804: '>': unsafe use of type 'bool' in operation
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(142): warning C4804: '>': unsafe use of type 'bool' in operation
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(163): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(183): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(184): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(214): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(214): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(229): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(242): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(245): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Generating code
+  0 of 37 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Raytracer2.vcxproj -> C:\Users\Customer PC\Documents\Visual Studio 2013\Projects\Raytracer\Release\Raytracer2.exe
