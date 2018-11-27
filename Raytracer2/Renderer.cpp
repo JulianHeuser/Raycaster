@@ -186,8 +186,8 @@ void  Renderer::Render(Graphics* gfx){
 		int stepX;
 		int stepY;
 
-		int mapX = static_cast<int>(floor(playerX));
-		int mapY = static_cast<int>(floor(playerY));
+		int mapX = int(floor(playerX));
+		int mapY = int(floor(playerY));
 
 		int side;
 
@@ -229,11 +229,12 @@ void  Renderer::Render(Graphics* gfx){
 		gfx->drawLine(mapOffsetX + (playerX * 10), mapOffsetY + (playerY * 10), mapOffsetX + (mapX * 10), mapOffsetY + (mapY * 10), 255, 255, 255, 1);	//Debug Rays
 
 		float perpWallDist;
+		perpWallDist = sqrt(pow((mapX - playerX),2)*stretchX + pow((mapY -playerY) ,2)* stretchY);
 		if (side == 0){
-			perpWallDist = ((mapX - playerX + (1 - stepX) / 2)  / rayDirX);
+			//perpWallDist = ((mapX - playerX + (1 - stepX) / 2)  / rayDirX);
 		}
 		else{
-			perpWallDist = ((mapY - playerY + (1 - stepY) / 2) / rayDirY);
+			//perpWallDist = ((mapY - playerY + (1 - stepY) / 2) / rayDirY);
 		}
 		int lineHeight = static_cast<int>(height / perpWallDist);
 		int drawStart = -lineHeight / 2 + height / 2;

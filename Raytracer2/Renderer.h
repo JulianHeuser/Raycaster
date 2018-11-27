@@ -4,7 +4,7 @@
 
 class Renderer{
 	//Variable for special stuff
-	float stretchX = 0.5;
+	float stretchX = 2;
 	float stretchY = 1.0;
 
 	//Variables needed for basic rendering
