@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Graphics.h"
 #include <math.h>
+#include <string>
 
 int Renderer::currentLevel;
 bool Renderer::Loading;
@@ -183,53 +184,68 @@ void  Renderer::Render(Graphics* gfx){
 		float deltaDistX = fabs(1 / rayDirX);
 		float deltaDistY = fabs(1 / rayDirY);
 
-		int stepX;
-		int stepY;
+		float stepX;
+		float stepY;
 
-		int mapX = int(floor(playerX));
-		int mapY = int(floor(playerY));
+		int mapX = floor(playerX);
+		int mapY = floor(playerY);
 
 		int side;
 
 		if (rayDirX < 0){
-			stepX = -1;
+			stepX = -1/width;//-.01f;
 			sideDistX = (playerX - mapX) * deltaDistX;
 		}
 		else{
-			stepX = 1;
+			stepX = 1 / width;
 			sideDistX = (mapX + 1 - playerX) * deltaDistX;
 		}
 		if (rayDirY < 0){
-			stepY = -1;
+			stepY = -1 / width;
 			sideDistY = (playerY - mapY) * deltaDistY;
 		}
 		else{
-			stepY = 1;
+			stepY = 1 / width;
 			sideDistY = (mapY + 1 - playerY) * deltaDistY;
 		}
 
 		//end DDA
 
+
+		float mapXfloat = playerX;
+		float mapYfloat = playerY;
+
 		while (grid[mapY][mapX] == 0){
-			float oldRay[2] = { mapX, mapY };
+			float oldRay[2] = { mapXfloat, mapYfloat };
 
 			if (sideDistX < sideDistY){
 				sideDistX += deltaDistX;
-				mapX += stepX;
+				mapXfloat += stepX;
 				side = 0;
 			}
 			else{
 				sideDistY += deltaDistY;
-				mapY += stepY;
+				mapYfloat += stepY;
 				side = 1;
 			}
 
+			mapX = floor(mapXfloat);
+			mapY = floor(mapYfloat);
 			//gfx->drawLine(mapOffsetX + (oldRay[0] * 10), mapOffsetY + (oldRay[1] * 10), mapOffsetX + (mapX * 10), mapOffsetY + (mapY * 10), 255, 255, 255, 1);	//Debug Rays
 		}
-		gfx->drawLine(mapOffsetX + (playerX * 10), mapOffsetY + (playerY * 10), mapOffsetX + (mapX * 10), mapOffsetY + (mapY * 10), 255, 255, 255, 1);	//Debug Rays
 
+
+		
+		
+
+		gfx->drawLine(mapOffsetX + (playerX * 10), mapOffsetY + (playerY * 10), mapOffsetX + (mapXfloat * 10), mapOffsetY + (mapYfloat * 10), 255, 255, 255, 1);	//Debug Rays
+
+		
 		float perpWallDist;
-		perpWallDist = sqrt(pow((mapX - playerX),2)*stretchX + pow((mapY -playerY) ,2)* stretchY);
+		perpWallDist = sqrt(pow((mapXfloat - playerX),2)*stretchX + pow((mapYfloat -playerY) ,2)* stretchY);
+
+
+
 		if (side == 0){
 			//perpWallDist = ((mapX - playerX + (1 - stepX) / 2)  / rayDirX);
 		}
@@ -243,7 +259,7 @@ void  Renderer::Render(Graphics* gfx){
 			gfx->drawLine(rays, drawStart, rays, drawEnd, 255, 255, 255, 1);
 		}
 		else{
-			gfx->drawLine(rays, drawStart, rays, drawEnd, 100, 100, 100, 1);
+			gfx->drawLine(rays, drawStart, rays, drawEnd, 255, 0, 0, 1);
 		}
 
 		rays += 1;
