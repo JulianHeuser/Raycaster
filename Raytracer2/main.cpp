@@ -24,7 +24,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 	windowclass.style = CS_HREDRAW | CS_VREDRAW; //do i want this, or do i want to lock the window size?
 	
 	RegisterClassEx(&windowclass);
-	RECT rect = {0,0,800,500};
+	RECT rect = {0,0,500,500};
 	AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_OVERLAPPEDWINDOW);
 	HWND windowHandle = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "MainWindow", "Raytracer", WS_OVERLAPPEDWINDOW, 100,100,rect.right - rect.left,rect.bottom-rect.top,NULL,NULL,hInstance,0);
 	if (!windowHandle) return -1;
@@ -37,21 +37,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 
 	ShowWindow(windowHandle, cCmdShow);
 	Renderer renderer;
-	renderer.Load(1);
+	renderer.Init();
 
 	MSG msg;
 	msg.message = WM_NULL;
 
 	while (msg.message != WM_QUIT){
-		static Renderer* ren;
-		//Debugging
-		if (GetAsyncKeyState(VK_ADD)){
-			renderer.Load(renderer.currentLevel + 1);
-		}
-		if (GetAsyncKeyState(VK_SUBTRACT)){
-			renderer.Load(renderer.currentLevel - 1);
-		}
-		//
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
 			DispatchMessage(&msg);
 		}

@@ -1,5 +1,6 @@
 #include "Graphics.h"
 
+using namespace std;
 #pragma comment(lib, "d2d1")
 
 Graphics::Graphics(){

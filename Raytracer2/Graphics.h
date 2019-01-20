@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <d2d1.h>
+using namespace std;
 
 class Graphics{
 	ID2D1Factory* factory;
