@@ -3,8 +3,8 @@
 #include <math.h>
 #include <string>
 
-#define CAMWIDTH 500;
-#define CAMHEIGHT 500;
+#define CAMWIDTH 500.0
+#define CAMHEIGHT 500.0
 
 //Levels
 int level1[6][6] = { { 1, 1, 1, 1, 1, 1 },
@@ -54,65 +54,99 @@ void Renderer::Init() {
 
 void Renderer::Update(){
 	if (GetAsyncKeyState(0x41)) {	//A
-		camPos[0] -= 1;
+		camPos.x -= 5;
 	}
 	if (GetAsyncKeyState(0x44)) {	//D
-		camPos[0] += 1;
+		camPos.x += 5;
+	}
+	if (GetAsyncKeyState(0x57)) {	//W
+		camPos.y += 5;
+	}
+	if (GetAsyncKeyState(0x53)) {	//S
+		camPos.y -= 5;
 	}
 
-	if (GetAsyncKeyState(0x25)) {	//Left
-		cubeRot -= 5;
+	if (GetAsyncKeyState(VK_LEFT)) {
+		camRot.z -= .1;
 	}
-	if (GetAsyncKeyState(0x27)) {	//Right
-		cubeRot += 5;
+	if (GetAsyncKeyState(VK_RIGHT)) {
+		camRot.z += .1;
 	}
 
+	if (GetAsyncKeyState(VK_UP)) {
+		camRot.x += .1;
+	}
+	if (GetAsyncKeyState(VK_DOWN)) {
+		camRot.x -= .1;
+	}
 
 	//Z Rot
-	matRotZ.m[0][0] = cos(cubeRot);
-	matRotZ.m[0][1] = sin(cubeRot);
-	matRotZ.m[1][0] = -sin(cubeRot);
-	matRotZ.m[1][1] = cos(cubeRot);
+	matRotZ.m[0][0] = cos(camRot.z);
+	matRotZ.m[0][1] = sin(camRot.z);
+	matRotZ.m[1][0] = -sin(camRot.z);
+	matRotZ.m[1][1] = cos(camRot.z);
 	matRotZ.m[2][2] = 1;
 	matRotZ.m[3][3] = 1;
 
 	//X Rot
 	matRotX.m[0][0] = 1;
-	matRotX.m[1][1] = cosf(cubeRot * .5f);
-	matRotX.m[1][2] = sin(cubeRot * .5f);
-	matRotX.m[2][1] = -sin(cubeRot * .5f);
-	matRotX.m[2][2] = cos(cubeRot * .5f);
+	matRotX.m[1][1] = cos(camRot.x);
+	matRotX.m[1][2] = sin(camRot.x);
+	matRotX.m[2][1] = -sin(camRot.x);
+	matRotX.m[2][2] = cos(camRot.x);
 	matRotX.m[3][3] = 1;
+
+
+	//Y Rot
+	matRotY.m[0][0] = cos(camRot.y);
+	matRotY.m[2][0] = sin(camRot.y);
+	matRotY.m[1][1] = 1;
+	matRotY.m[0][2] = -sin(camRot.y);
+	matRotY.m[2][2] = cos(camRot.y);
+	matRotY.m[3][3] = 1;
 }
 
 void  Renderer::Render(Graphics* gfx){
 	//Render
 	gfx->BeginDraw();
-	gfx->clearScreen(0, 0, 1);
+	gfx->clearScreen(1, 1, 1);
 
 	for (auto tri : cube.tris) {
 
 		triangle triRot;
-		triRot.p[0] = MultiplyMatrixValue(tri.p[0], matRotZ);
-		triRot.p[1] = MultiplyMatrixValue(tri.p[1], matRotZ);
-		triRot.p[2] = MultiplyMatrixValue(tri.p[2], matRotZ);
+		triRot.p[0] = MultiplyMatrixValue(subtractPoints(tri.p[0], camPos), matRotZ);
+		triRot.p[1] = MultiplyMatrixValue(subtractPoints(tri.p[1], camPos), matRotZ);
+		triRot.p[2] = MultiplyMatrixValue(subtractPoints(tri.p[2], camPos), matRotZ);
 
+		triRot.p[0] = MultiplyMatrixValue(subtractPoints(triRot.p[0], camPos), matRotX);
+		triRot.p[1] = MultiplyMatrixValue(subtractPoints(triRot.p[1], camPos), matRotX);
+		triRot.p[2] = MultiplyMatrixValue(subtractPoints(triRot.p[2], camPos), matRotX);
 
-		triRot.p[0] = MultiplyMatrixValue(triRot.p[0], matRotX);
-		triRot.p[1] = MultiplyMatrixValue(triRot.p[1], matRotX);
-		triRot.p[2] = MultiplyMatrixValue(triRot.p[2], matRotX);
+		triRot.p[0] = addPoints(triRot.p[0], camPos);
+		triRot.p[1] = addPoints(triRot.p[1], camPos);
+		triRot.p[2] = addPoints(triRot.p[2], camPos);
 
-		gfx->drawLine(triRot.p[0].x - camPos[0], triRot.p[0].y - camPos[1], triRot.p[1].x - camPos[0], triRot.p[1].y - camPos[1], 0,0,0,1);
-		gfx->drawLine(triRot.p[1].x - camPos[0], triRot.p[1].y - camPos[1], triRot.p[2].x - camPos[0], triRot.p[2].y - camPos[1], 0, 0, 0, 1);
-		gfx->drawLine(triRot.p[2].x - camPos[0], triRot.p[2].y - camPos[1], triRot.p[0].x - camPos[0], triRot.p[0].y - camPos[1], 0, 0, 0, 1);
+		//triRot.p[0] = MultiplyMatrixValue(triRot.p[0], matRotX);
+		//triRot.p[1] = MultiplyMatrixValue(triRot.p[1], matRotX);
+		//triRot.p[2] = MultiplyMatrixValue(triRot.p[2], matRotX);
+
+		if (triRot.p[0].y > camPos.y) {
+			vec3D newCamPos = camPos;
+			newCamPos.x -= CAMWIDTH / 2;
+			newCamPos.z -= CAMHEIGHT / 2;
+
+			gfx->drawLine(triRot.p[0].x - newCamPos.x, triRot.p[0].z - newCamPos.z, triRot.p[1].x - newCamPos.x, triRot.p[1].z - newCamPos.z, 0, 0, 0, 1);
+			gfx->drawLine(triRot.p[1].x - newCamPos.x, triRot.p[1].z - newCamPos.z, triRot.p[2].x - newCamPos.x, triRot.p[2].z - newCamPos.z, 0, 0, 0, 1);
+			gfx->drawLine(triRot.p[2].x - newCamPos.x, triRot.p[2].z - newCamPos.z, triRot.p[0].x - newCamPos.x, triRot.p[0].z - newCamPos.z, 0, 0, 0, 1);
+		}
 	}
 
 
 	gfx->EndDraw();
 }
 
-point Renderer::MultiplyMatrixValue(point i, mat4x4 &m) {
-	point o;
+vec3D Renderer::MultiplyMatrixValue(vec3D i, mat4x4 &m) {
+	vec3D o;
 
 	o.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + m.m[3][0];
 	o.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + m.m[3][1];
@@ -125,4 +159,21 @@ point Renderer::MultiplyMatrixValue(point i, mat4x4 &m) {
 		o.z /= w;
 	}
 	return o;
+}
+
+vec3D Renderer::subtractPoints(vec3D a, vec3D b) {
+	vec3D c;
+	c.x = a.x - b.x;
+	c.y = a.y - b.y;
+	c.z = a.z - b.z;
+	return c;
+}
+
+
+vec3D Renderer::addPoints(vec3D a, vec3D b) {
+	vec3D c;
+	c.x = a.x + b.x;
+	c.y = a.y + b.y;
+	c.z = a.z + b.z;
+	return c;
 }

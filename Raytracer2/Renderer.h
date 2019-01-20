@@ -5,17 +5,15 @@
 
 class Renderer{
 	//Variables for special 
-	float camPos[3] = { 0, 0, 0 };
-	float camDir[3] = { 1, 0, 0 };
+	vec3D camPos = { 0 };
+	vec3D camRot = { 0 };
 
-	mat4x4 matRotZ;
 	mat4x4 matRotX;
+	mat4x4 matRotY;
+	mat4x4 matRotZ;
 
 	struct triangle {
-		point p[3];
-		//float p1[3];
-		//float p2[3];
-		//float p3[3];
+		vec3D p[3];
 	};
 
 	struct mesh {
@@ -23,12 +21,15 @@ class Renderer{
 	};
 
 	mesh cube;
-	float cubeRot;
 
 public:
 	void Init();
 	void Render(Graphics* gfx);
 	void Update(); 
 
-	point MultiplyMatrixValue(point i, mat4x4 &m);
+
+	//Math stuff that I'm gonna do a lot
+	vec3D MultiplyMatrixValue(vec3D i, mat4x4 &m);
+	vec3D Renderer::subtractPoints(vec3D a, vec3D b);
+	vec3D Renderer::addPoints(vec3D a, vec3D b);
 };
