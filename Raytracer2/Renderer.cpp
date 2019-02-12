@@ -55,12 +55,12 @@ void Renderer::Init() {
 
 void Renderer::Update(){
 	if (GetAsyncKeyState(0x41)) {	//A
-		camPos.x -= .5f * sin(camRot.y + (90*(PI/180)));
-		camPos.z -= .5f * cos(camRot.y + (90 * (PI / 180)));
+		camPos.x -= .5f * sin(camRot.y + (PI / 2));
+		camPos.z -= .5f * cos(camRot.y + (PI / 2));
 	}
 	if (GetAsyncKeyState(0x44)) {	//D
-		camPos.x += .5f * sin(camRot.y + (90 * (PI / 180)));
-		camPos.z += .5f * cos(camRot.y + (90 * (PI / 180)));
+		camPos.x += .5f * sin(camRot.y + (PI / 2));
+		camPos.z += .5f * cos(camRot.y + (PI / 2));
 	}
 	if (GetAsyncKeyState(0x57)) {	//W
 		camPos.x += .5f * sin(camRot.y);
