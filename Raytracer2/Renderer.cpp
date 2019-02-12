@@ -26,58 +26,63 @@ void Renderer::Init() {
 
 
 	cube.tris = {
+
 		//Front face
-		{ 20,10,20,		60,10,20,	20,10,60 },
-		{ 60,10,60,		60,10,20,	20,10,60 },
+		{ 0,0,0,	0,1,0,	1,1,0 },
+		{ 0,0,0,	1,1,0,	1,0,0 },
 
 		//Back face
-		{ 20,50,20,		60,50,20,	20,50,60 },
-		{ 60,50,60,		60,50,20,	20,50,60 },
+		{ 1,0,0,	1,1,0,	1,1,1 },
+		{ 1,0,0,	1,1,1,	1,0,1 },
 
 		//Top face
-		{ 20,50,60,		60,50,60,	20,10,60 },
-		{ 60,10,60,		60,50,60,	20,10,60 },
+		{ 1,0,1,	1,1,1,	0,1,1 },
+		{ 1,0,1,	0,1,1,	0,0,1 },
 
 		//Bottom face
-		{ 20,50,20,		60,50,20,	20,10,20 },
-		{ 60,10,20,		60,50,20,	20,10,20 },
+		{ 0,0,1,	0,1,1,	0,1,0 },
+		{ 0,0,1,	0,1,0,	0,0,0 },
 
 		//Right face
-		{ 60,10,60,		60,50,60,	60,50,20 },
-		{ 60,10,60,		60,10,20,	60,50,20 },
+		{ 0,1,0,	0,1,1,	1,1,1 },
+		{ 0,1,0,	1,1,1,	1,1,0 },
 
 		//Left face
-		{ 20,10,60,		20,50,60,	20,50,20 },
-		{ 20,10,60,		20,10,20,	20,50,20 },
+		{ 1,0,1,	0,0,1,	0,0,0 },
+		{ 1,0,1,	0,0,0,	1,0,0 },
 	};
 }
 
 void Renderer::Update(){
 	if (GetAsyncKeyState(0x41)) {	//A
-		camPos.x -= 5;
+		camPos.x -= .5f * sin(camRot.y + (90*(PI/180)));
+		camPos.z -= .5f * cos(camRot.y + (90 * (PI / 180)));
 	}
 	if (GetAsyncKeyState(0x44)) {	//D
-		camPos.x += 5;
+		camPos.x += .5f * sin(camRot.y + (90 * (PI / 180)));
+		camPos.z += .5f * cos(camRot.y + (90 * (PI / 180)));
 	}
 	if (GetAsyncKeyState(0x57)) {	//W
-		camPos.y += 5;
+		camPos.x += .5f * sin(camRot.y);
+		camPos.z += .5f * cos(camRot.y);
 	}
 	if (GetAsyncKeyState(0x53)) {	//S
-		camPos.y -= 5;
+		camPos.x -= .5f * sin(camRot.y);
+		camPos.z -= .5f * cos(camRot.y);
 	}
 
 	if (GetAsyncKeyState(VK_LEFT)) {
-		camRot.z -= .1;
+		camRot.y -= .1f;
 	}
 	if (GetAsyncKeyState(VK_RIGHT)) {
-		camRot.z += .1;
+		camRot.y += .1f;
 	}
 
 	if (GetAsyncKeyState(VK_UP)) {
-		camRot.x += .1;
+		camRot.x -= .1f;
 	}
 	if (GetAsyncKeyState(VK_DOWN)) {
-		camRot.x -= .1;
+		camRot.x += .1f;
 	}
 
 	//Z Rot
@@ -98,12 +103,20 @@ void Renderer::Update(){
 
 
 	//Y Rot
-	matRotY.m[0][0] = cos(camRot.y);
-	matRotY.m[2][0] = sin(camRot.y);
+	matRotY.m[0][0] = cos(-camRot.y);
+	matRotY.m[2][0] = sin(-camRot.y);
 	matRotY.m[1][1] = 1;
-	matRotY.m[0][2] = -sin(camRot.y);
-	matRotY.m[2][2] = cos(camRot.y);
+	matRotY.m[0][2] = -sin(-camRot.y);
+	matRotY.m[2][2] = cos(-camRot.y);
 	matRotY.m[3][3] = 1;
+
+	//Projection matrix
+	projection.m[0][0] = aspectRatio * fovRad;
+	projection.m[1][1] = fovRad;
+	projection.m[2][2] = farPlane / (farPlane - nearPlane);
+	projection.m[3][2] = (-farPlane * nearPlane) / (farPlane - nearPlane);
+	projection.m[2][3] = 1.0f;
+	projection.m[3][3] = 0.0f;
 }
 
 void  Renderer::Render(Graphics* gfx){
@@ -114,31 +127,46 @@ void  Renderer::Render(Graphics* gfx){
 	for (auto tri : cube.tris) {
 
 		triangle triRot;
-		triRot.p[0] = MultiplyMatrixValue(subtractPoints(tri.p[0], camPos), matRotZ);
-		triRot.p[1] = MultiplyMatrixValue(subtractPoints(tri.p[1], camPos), matRotZ);
-		triRot.p[2] = MultiplyMatrixValue(subtractPoints(tri.p[2], camPos), matRotZ);
+		triangle triTranslated;
+		triangle triProjected;
+		triangle triFinal;
 
-		triRot.p[0] = MultiplyMatrixValue(subtractPoints(triRot.p[0], camPos), matRotX);
-		triRot.p[1] = MultiplyMatrixValue(subtractPoints(triRot.p[1], camPos), matRotX);
-		triRot.p[2] = MultiplyMatrixValue(subtractPoints(triRot.p[2], camPos), matRotX);
+		//Translate points according to camera location
+		triTranslated.p[0] = subtractVectors(tri.p[0], camPos);
+		triTranslated.p[1] = subtractVectors(tri.p[1], camPos);
+		triTranslated.p[2] = subtractVectors(tri.p[2], camPos);
 
-		triRot.p[0] = addPoints(triRot.p[0], camPos);
-		triRot.p[1] = addPoints(triRot.p[1], camPos);
-		triRot.p[2] = addPoints(triRot.p[2], camPos);
+		//Rotate points around camera based on camera rotation
+		triRot.p[0] = MultiplyMatrixValue(triTranslated.p[0], matRotY);
+		triRot.p[1] = MultiplyMatrixValue(triTranslated.p[1], matRotY);
+		triRot.p[2] = MultiplyMatrixValue(triTranslated.p[2], matRotY);
 
-		//triRot.p[0] = MultiplyMatrixValue(triRot.p[0], matRotX);
-		//triRot.p[1] = MultiplyMatrixValue(triRot.p[1], matRotX);
-		//triRot.p[2] = MultiplyMatrixValue(triRot.p[2], matRotX);
+		triRot.p[0] = MultiplyMatrixValue(triRot.p[0], matRotX);
+		triRot.p[1] = MultiplyMatrixValue(triRot.p[1], matRotX);
+		triRot.p[2] = MultiplyMatrixValue(triRot.p[2], matRotX);
 
-		if (triRot.p[0].y > camPos.y) {
-			vec3D newCamPos = camPos;
-			newCamPos.x -= CAMWIDTH / 2;
-			newCamPos.z -= CAMHEIGHT / 2;
+		//Don't draw tris behind the camera
+		if (triRot.p[0].z < nearPlane || triRot.p[1].z < nearPlane || triRot.p[2].z < nearPlane)
+			continue;
 
-			gfx->drawLine(triRot.p[0].x - newCamPos.x, triRot.p[0].z - newCamPos.z, triRot.p[1].x - newCamPos.x, triRot.p[1].z - newCamPos.z, 0, 0, 0, 1);
-			gfx->drawLine(triRot.p[1].x - newCamPos.x, triRot.p[1].z - newCamPos.z, triRot.p[2].x - newCamPos.x, triRot.p[2].z - newCamPos.z, 0, 0, 0, 1);
-			gfx->drawLine(triRot.p[2].x - newCamPos.x, triRot.p[2].z - newCamPos.z, triRot.p[0].x - newCamPos.x, triRot.p[0].z - newCamPos.z, 0, 0, 0, 1);
-		}
+		//Use projection matrix to get screen coordinates of points
+		triProjected.p[0] = MultiplyMatrixValue(triRot.p[0], projection);
+		triProjected.p[1] = MultiplyMatrixValue(triRot.p[1], projection);
+		triProjected.p[2] = MultiplyMatrixValue(triRot.p[2], projection);
+
+		triProjected.p[0].x += 1.0f; triProjected.p[0].y += 1.0f;
+		triProjected.p[1].x += 1.0f; triProjected.p[1].y += 1.0f;
+		triProjected.p[2].x += 1.0f; triProjected.p[2].y += 1.0f;
+
+		triProjected.p[0].x *= 250.0f; triProjected.p[0].y *= 250.0f;
+		triProjected.p[1].x *= 250.0f; triProjected.p[1].y *= 250.0f;
+		triProjected.p[2].x *= 250.0f; triProjected.p[2].y *= 250.0f;
+
+		//Draw the triangle
+		triFinal = triProjected;
+		gfx->drawLine(triFinal.p[0].x, triFinal.p[0].y, triFinal.p[1].x, triFinal.p[1].y, 0, 0, 0, 1);
+		gfx->drawLine(triFinal.p[1].x, triFinal.p[1].y, triFinal.p[2].x, triFinal.p[2].y, 0, 0, 0, 1);
+		gfx->drawLine(triFinal.p[2].x, triFinal.p[2].y, triFinal.p[0].x, triFinal.p[0].y, 0, 0, 0, 1);
 	}
 
 
@@ -161,7 +189,7 @@ vec3D Renderer::MultiplyMatrixValue(vec3D i, mat4x4 &m) {
 	return o;
 }
 
-vec3D Renderer::subtractPoints(vec3D a, vec3D b) {
+vec3D Renderer::subtractVectors(vec3D a, vec3D b) {
 	vec3D c;
 	c.x = a.x - b.x;
 	c.y = a.y - b.y;
@@ -170,7 +198,7 @@ vec3D Renderer::subtractPoints(vec3D a, vec3D b) {
 }
 
 
-vec3D Renderer::addPoints(vec3D a, vec3D b) {
+vec3D Renderer::addVectors(vec3D a, vec3D b) {
 	vec3D c;
 	c.x = a.x + b.x;
 	c.y = a.y + b.y;

@@ -2,6 +2,7 @@
 #include "Graphics.h";
 #include <math.h>;
 #include "Renderer.h";
+#include "defines.h"
 Graphics* graphics;
 
 
@@ -24,7 +25,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmd, int
 	windowclass.style = CS_HREDRAW | CS_VREDRAW; //do i want this, or do i want to lock the window size?
 	
 	RegisterClassEx(&windowclass);
-	RECT rect = {0,0,500,500};
+	RECT rect = {0,0,WIDTH,HEIGHT};
 	AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_OVERLAPPEDWINDOW);
 	HWND windowHandle = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, "MainWindow", "Raytracer", WS_OVERLAPPEDWINDOW, 100,100,rect.right - rect.left,rect.bottom-rect.top,NULL,NULL,hInstance,0);
 	if (!windowHandle) return -1;

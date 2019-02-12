@@ -1,7 +1,2 @@
 ﻿  Renderer.cpp
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.h(4): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(70): warning C4305: '-=': truncation from 'double' to 'float'
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(73): warning C4305: '+=': truncation from 'double' to 'float'
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(77): warning C4305: '+=': truncation from 'double' to 'float'
-c:\users\customer pc\documents\visual studio 2013\projects\raytracer\raytracer2\renderer.cpp(80): warning C4305: '-=': truncation from 'double' to 'float'
   Raytracer2.vcxproj -> C:\Users\Customer PC\Documents\Visual Studio 2013\Projects\Raytracer\Debug\Raytracer2.exe
