@@ -1,26 +1,10 @@
 #include "Renderer.h"
 #include "Graphics.h"
-#include <math.h>
 #include <string>
 
 #define CAMWIDTH 500.0
 #define CAMHEIGHT 500.0
 
-//Levels
-int level1[6][6] = { { 1, 1, 1, 1, 1, 1 },
-{ 1, 0, 0, 0, 0, 1 },
-{ 1, 0, 0, 0, 0, 1 },
-{ 1, 0, 0, 0, 0, 1 },
-{ 1, 0, 0, 0, 0, 1 },
-{ 1, 1, 1, 1, 1, 1 } };
-
-
-int level2[6][6] = { { 1, 1, 1, 1, 1, 1 },
-{ 1, 0, 0, 0, 1, 1 },
-{ 1, 0, 0, 0, 0, 1 },
-{ 1, 1, 0, 0, 0, 1 },
-{ 1, 0, 0, 0, 0, 1 },
-{ 1, 1, 1, 1, 1, 1 } };
 
 void Renderer::Init() {
 
@@ -65,10 +49,12 @@ void Renderer::Update(){
 	if (GetAsyncKeyState(0x57)) {	//W
 		camPos.x += .5f * sin(camRot.y);
 		camPos.z += .5f * cos(camRot.y);
+		camPos.y += .5f * sin(camRot.x);
 	}
 	if (GetAsyncKeyState(0x53)) {	//S
 		camPos.x -= .5f * sin(camRot.y);
 		camPos.z -= .5f * cos(camRot.y);
+		camPos.y -= .5f * sin(camRot.x);
 	}
 
 	if (GetAsyncKeyState(VK_LEFT)) {
@@ -126,10 +112,10 @@ void  Renderer::Render(Graphics* gfx){
 
 	for (auto tri : cube.tris) {
 
-		triangle triRot;
-		triangle triTranslated;
-		triangle triProjected;
-		triangle triFinal;
+		triangle triTranslated, triRot, triProjected, triFinal;
+
+		vec3D lightDirRot = MultiplyMatrixValue(lightDir, matRotY);
+		lightDirRot = MultiplyMatrixValue(lightDirRot, matRotX);
 
 		//Translate points according to camera location
 		triTranslated.p[0] = subtractVectors(tri.p[0], camPos);
@@ -149,59 +135,40 @@ void  Renderer::Render(Graphics* gfx){
 		if (triRot.p[0].z < nearPlane || triRot.p[1].z < nearPlane || triRot.p[2].z < nearPlane)
 			continue;
 
-		//Use projection matrix to get screen coordinates of points
-		triProjected.p[0] = MultiplyMatrixValue(triRot.p[0], projection);
-		triProjected.p[1] = MultiplyMatrixValue(triRot.p[1], projection);
-		triProjected.p[2] = MultiplyMatrixValue(triRot.p[2], projection);
+		//Calculate Normals
+		vec3D line1, line2, normal;
+		line1 = subtractVectors(triRot.p[1], triRot.p[0]);
+		line2 = subtractVectors(triRot.p[2], triRot.p[0]);
+		normal.x = line1.y * line2.z - line1.z * line2.y;
+		normal.y = line1.z * line2.x - line1.x * line2.z;
+		normal.z = line1.x * line2.y - line1.y * line2.x;
+		normalizeVector(&normal);
 
-		triProjected.p[0].x += 1.0f; triProjected.p[0].y += 1.0f;
-		triProjected.p[1].x += 1.0f; triProjected.p[1].y += 1.0f;
-		triProjected.p[2].x += 1.0f; triProjected.p[2].y += 1.0f;
+		float brightness = normal.x * lightDirRot.x + normal.y * lightDirRot.y + normal.z * lightDirRot.z;
+		brightness = (brightness + 1)/2;
 
-		triProjected.p[0].x *= 250.0f; triProjected.p[0].y *= 250.0f;
-		triProjected.p[1].x *= 250.0f; triProjected.p[1].y *= 250.0f;
-		triProjected.p[2].x *= 250.0f; triProjected.p[2].y *= 250.0f;
+		//Dot product calculation to cull nonvisible faces
+		if (normal.x * triRot.p[0].x + normal.y * triRot.p[0].y + normal.z * triRot.p[0].z < 0) {
 
-		//Draw the triangle
-		triFinal = triProjected;
-		gfx->drawLine(triFinal.p[0].x, triFinal.p[0].y, triFinal.p[1].x, triFinal.p[1].y, 0, 0, 0, 1);
-		gfx->drawLine(triFinal.p[1].x, triFinal.p[1].y, triFinal.p[2].x, triFinal.p[2].y, 0, 0, 0, 1);
-		gfx->drawLine(triFinal.p[2].x, triFinal.p[2].y, triFinal.p[0].x, triFinal.p[0].y, 0, 0, 0, 1);
+			//Use projection matrix to get screen coordinates of points
+			triProjected.p[0] = MultiplyMatrixValue(triRot.p[0], projection);
+			triProjected.p[1] = MultiplyMatrixValue(triRot.p[1], projection);
+			triProjected.p[2] = MultiplyMatrixValue(triRot.p[2], projection);
+
+			triProjected.p[0].x += 1.0f; triProjected.p[0].y += 1.0f;
+			triProjected.p[1].x += 1.0f; triProjected.p[1].y += 1.0f;
+			triProjected.p[2].x += 1.0f; triProjected.p[2].y += 1.0f;
+
+			triProjected.p[0].x *= WIDTH / 2.0f; triProjected.p[0].y *= WIDTH / 2.0f;
+			triProjected.p[1].x *= WIDTH / 2.0f; triProjected.p[1].y *= WIDTH / 2.0f;
+			triProjected.p[2].x *= WIDTH / 2.0f; triProjected.p[2].y *= WIDTH / 2.0f;
+
+			//Draw the triangle
+			triFinal = triProjected;
+			gfx->drawTri(triFinal.p[0], triFinal.p[1], triFinal.p[2], brightness, brightness, brightness, 1);
+		}
 	}
 
 
 	gfx->EndDraw();
-}
-
-vec3D Renderer::MultiplyMatrixValue(vec3D i, mat4x4 &m) {
-	vec3D o;
-
-	o.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + m.m[3][0];
-	o.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + m.m[3][1];
-	o.z = i.x * m.m[0][2] + i.y * m.m[1][2] + i.z * m.m[2][2] + m.m[3][2];
-	float w = i.x * m.m[0][3] + i.y * m.m[1][3] + i.z * m.m[2][3] + m.m[3][3];
-
-	if (w != 0) {
-		o.x /= w;
-		o.y /= w;
-		o.z /= w;
-	}
-	return o;
-}
-
-vec3D Renderer::subtractVectors(vec3D a, vec3D b) {
-	vec3D c;
-	c.x = a.x - b.x;
-	c.y = a.y - b.y;
-	c.z = a.z - b.z;
-	return c;
-}
-
-
-vec3D Renderer::addVectors(vec3D a, vec3D b) {
-	vec3D c;
-	c.x = a.x + b.x;
-	c.y = a.y + b.y;
-	c.z = a.z + b.z;
-	return c;
 }

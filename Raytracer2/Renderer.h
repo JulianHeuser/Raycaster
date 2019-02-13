@@ -1,6 +1,6 @@
 #pragma once
 #include "Graphics.h"
-#include "shared.h"
+#include "vectors.h"
 #include "defines.h"
 #include <vector>
 
@@ -8,6 +8,8 @@ class Renderer{
 	//Variables for special 
 	vec3D camPos = { 0 };
 	vec3D camRot = { 0 };
+
+	vec3D lightDir = { .4f,.6f,0 };
 
 	mat4x4 matRotX;
 	mat4x4 matRotY;
@@ -35,11 +37,5 @@ class Renderer{
 public:
 	void Init();
 	void Render(Graphics* gfx);
-	void Update(); 
-
-
-	//Math stuff that I'm gonna do a lot
-	vec3D MultiplyMatrixValue(vec3D i, mat4x4 &m);
-	vec3D Renderer::subtractVectors(vec3D a, vec3D b);
-	vec3D Renderer::addVectors(vec3D a, vec3D b);
+	void Update();
 };

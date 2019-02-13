@@ -2,6 +2,8 @@
 
 #include <Windows.h>
 #include <d2d1.h>
+#include "vectors.h"
+
 using namespace std;
 
 class Graphics{
@@ -21,4 +23,5 @@ public:
 	void drawCircle(float x, float y, float radius, float r, float g, float b, float a);
 	void drawLine(float x, float y, float x2, float y2, float r, float g, float b, float a);
 	void drawRect(float x, float y, float x2, float y2, float r, float g, float b, float a);
+	void drawTri(vec3D p1, vec3D p2, vec3D p3, float r, float g, float b, float a);
 };
