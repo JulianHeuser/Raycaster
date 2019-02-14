@@ -39,23 +39,26 @@ void Renderer::Init() {
 
 void Renderer::Update(){
 	if (GetAsyncKeyState(0x41)) {	//A
-		camPos.x -= .5f * sin(camRot.y + (PI / 2));
-		camPos.z -= .5f * cos(camRot.y + (PI / 2));
+		velocity.x -= .01f * sin(camRot.y + (PI / 2));
+		velocity.z -= .01f * cos(camRot.y + (PI / 2));
 	}
 	if (GetAsyncKeyState(0x44)) {	//D
-		camPos.x += .5f * sin(camRot.y + (PI / 2));
-		camPos.z += .5f * cos(camRot.y + (PI / 2));
+		velocity.x += .01f * sin(camRot.y + (PI / 2));
+		velocity.z += .01f * cos(camRot.y + (PI / 2));
 	}
 	if (GetAsyncKeyState(0x57)) {	//W
-		camPos.x += .5f * sin(camRot.y);
-		camPos.z += .5f * cos(camRot.y);
-		camPos.y += .5f * sin(camRot.x);
+		velocity.x += .01f * sin(camRot.y);
+		velocity.z += .01f * cos(camRot.y);
+		velocity.y += .01f * sin(camRot.x);
 	}
 	if (GetAsyncKeyState(0x53)) {	//S
-		camPos.x -= .5f * sin(camRot.y);
-		camPos.z -= .5f * cos(camRot.y);
-		camPos.y -= .5f * sin(camRot.x);
+		velocity.x -= .01f * sin(camRot.y);
+		velocity.z -= .01f * cos(camRot.y);
+		velocity.y -= .01f * sin(camRot.x);
 	}
+	velocity = divideVector(velocity, 1.1f);
+
+	camPos = addVectors(camPos, velocity);
 
 	if (GetAsyncKeyState(VK_LEFT)) {
 		camRot.y -= .1f;
@@ -110,17 +113,43 @@ void  Renderer::Render(Graphics* gfx){
 	gfx->BeginDraw();
 	gfx->clearScreen(1, 1, 1);
 
+	vec3D lightDirRot = MultiplyMatrixValue(lightDir, matRotY);
+	lightDirRot = MultiplyMatrixValue(lightDirRot, matRotX);
+
 	for (auto tri : cube.tris) {
 
 		triangle triTranslated, triRot, triProjected, triFinal;
-
-		vec3D lightDirRot = MultiplyMatrixValue(lightDir, matRotY);
-		lightDirRot = MultiplyMatrixValue(lightDirRot, matRotX);
 
 		//Translate points according to camera location
 		triTranslated.p[0] = subtractVectors(tri.p[0], camPos);
 		triTranslated.p[1] = subtractVectors(tri.p[1], camPos);
 		triTranslated.p[2] = subtractVectors(tri.p[2], camPos);
+
+		//Calculate Normals (1)
+		vec3D line1, line2, normalPre;
+		line1 = subtractVectors(triTranslated.p[1], triTranslated.p[0]);
+		line2 = subtractVectors(triTranslated.p[2], triTranslated.p[0]);
+		normalPre.x = line1.y * line2.z - line1.z * line2.y;
+		normalPre.y = line1.z * line2.x - line1.x * line2.z;
+		normalPre.z = line1.x * line2.y - line1.y * line2.x;
+		normalizeVector(&normalPre);
+
+		//Collision Detection
+		float testRed = 0;
+		vec3D camPosFlat = subtractVectors(camPos, normalPre);
+		vec3D p1norm = triTranslated.p[0]; vec3D p2norm = triTranslated.p[1]; vec3D p3norm = triTranslated.p[2];
+		normalizeVector(&p1norm); normalizeVector(&p2norm); normalizeVector(&p3norm);
+		p1norm = subtractVectors(p1norm, normalPre); p2norm = subtractVectors(p2norm, normalPre); p3norm = subtractVectors(p3norm, normalPre);
+		if (!((p1norm.x < 0 && p2norm.x < 0 && p3norm.x < 0) || (p1norm.x > 0 && p2norm.x > 0 && p3norm.x > 0)) || !((p1norm.y < 0 && p2norm.y < 0 && p3norm.y < 0) || (p1norm.y > 0 && p2norm.y > 0 && p3norm.y > 0)) || !((p1norm.z < 0 && p2norm.z < 0 && p3norm.z < 0) || (p1norm.z > 0 && p2norm.z > 0 && p3norm.z > 0))) {
+			colliding = true;
+			testRed = 255;
+
+			//find compenent of distance along normal
+			float compDist = (dot(triRot.p[0], normalPre)) / dist(triRot.p[0]);
+			if (compDist <= .92 && compDist >= 0) {
+			}
+			//TODO: make this actually modify the velocity
+		}
 
 		//Rotate points around camera based on camera rotation
 		triRot.p[0] = MultiplyMatrixValue(triTranslated.p[0], matRotY);
@@ -136,7 +165,7 @@ void  Renderer::Render(Graphics* gfx){
 			continue;
 
 		//Calculate Normals
-		vec3D line1, line2, normal;
+		vec3D normal;
 		line1 = subtractVectors(triRot.p[1], triRot.p[0]);
 		line2 = subtractVectors(triRot.p[2], triRot.p[0]);
 		normal.x = line1.y * line2.z - line1.z * line2.y;
@@ -144,11 +173,12 @@ void  Renderer::Render(Graphics* gfx){
 		normal.z = line1.x * line2.y - line1.y * line2.x;
 		normalizeVector(&normal);
 
+		//Basic shading
 		float brightness = normal.x * lightDirRot.x + normal.y * lightDirRot.y + normal.z * lightDirRot.z;
 		brightness = (brightness + 1)/2;
 
 		//Dot product calculation to cull nonvisible faces
-		if (normal.x * triRot.p[0].x + normal.y * triRot.p[0].y + normal.z * triRot.p[0].z < 0) {
+		if (dot(normal, triRot.p[0]) < 0) {
 
 			//Use projection matrix to get screen coordinates of points
 			triProjected.p[0] = MultiplyMatrixValue(triRot.p[0], projection);
@@ -165,7 +195,7 @@ void  Renderer::Render(Graphics* gfx){
 
 			//Draw the triangle
 			triFinal = triProjected;
-			gfx->drawTri(triFinal.p[0], triFinal.p[1], triFinal.p[2], brightness, brightness, brightness, 1);
+			gfx->drawTri(triFinal.p[0], triFinal.p[1], triFinal.p[2], testRed, brightness/4, brightness/4, 1);
 		}
 	}
 

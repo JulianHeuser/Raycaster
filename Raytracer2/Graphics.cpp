@@ -57,9 +57,13 @@ void Graphics::drawRect(float x, float y, float x2, float y2, float r, float g, 
 void Graphics::drawTri(vec3D p1, vec3D p2, vec3D p3, float r, float g, float b, float a) {
 	brush->SetColor(D2D1::ColorF(r, g, b, a));
 
+	renderTarget->DrawLine(D2D1::Point2F(p1.x, p1.y), D2D1::Point2F(p2.x, p2.y), brush);
+	renderTarget->DrawLine(D2D1::Point2F(p2.x, p2.y), D2D1::Point2F(p3.x, p3.y), brush);
+	renderTarget->DrawLine(D2D1::Point2F(p3.x, p3.y), D2D1::Point2F(p1.x, p1.y), brush);
 
 	//TODO: get a better fill algorithm
 
+	/*
 	vec3D avgP;
 	avgP.x = (p1.x + p2.x + p3.x) / 3;
 	avgP.y = (p1.y + p2.y + p3.y) / 3;
@@ -82,6 +86,6 @@ void Graphics::drawTri(vec3D p1, vec3D p2, vec3D p3, float r, float g, float b, 
 		np3 = addVectors(divideVector(subtractVectors(np3, avgP), factor),avgP);
 		avgDist = sqrtf((np1.x - avgP.x)*(np1.x - avgP.x) + (np1.y - avgP.y)*(np1.y - avgP.y));
 	}
-
+	*/
 
 }

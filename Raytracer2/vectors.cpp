@@ -54,3 +54,11 @@ vec3D multiplyVector(vec3D vec, float mult){
 	vec.z *= mult;
 	return vec;
 }
+
+float dot(vec3D vec1, vec3D vec2) {
+	return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
+}
+
+float dist(vec3D vec) {
+	return sqrtf(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
+}

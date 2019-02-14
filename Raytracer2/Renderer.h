@@ -6,15 +6,18 @@
 
 class Renderer{
 	//Variables for special 
-	vec3D camPos = { 0 };
+	vec3D camPos = { 0,0,-2 };
 	vec3D camRot = { 0 };
 
 	vec3D lightDir = { .4f,.6f,0 };
+
+	vec3D velocity = { 0 };
 
 	mat4x4 matRotX;
 	mat4x4 matRotY;
 	mat4x4 matRotZ;
 
+	bool colliding = false;
 
 	//Variables for projection
 	float nearPlane = 0.1f;
