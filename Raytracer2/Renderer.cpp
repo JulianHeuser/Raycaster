@@ -125,30 +125,15 @@ void  Renderer::Render(Graphics* gfx){
 		triTranslated.p[1] = subtractVectors(tri.p[1], camPos);
 		triTranslated.p[2] = subtractVectors(tri.p[2], camPos);
 
-		//Calculate Normals (1)
-		vec3D line1, line2, normalPre;
-		line1 = subtractVectors(triTranslated.p[1], triTranslated.p[0]);
-		line2 = subtractVectors(triTranslated.p[2], triTranslated.p[0]);
-		normalPre.x = line1.y * line2.z - line1.z * line2.y;
-		normalPre.y = line1.z * line2.x - line1.x * line2.z;
-		normalPre.z = line1.x * line2.y - line1.y * line2.x;
-		normalizeVector(&normalPre);
 
 		//Collision Detection
 		float testRed = 0;
-		vec3D camPosFlat = subtractVectors(camPos, normalPre);
 		vec3D p1norm = triTranslated.p[0]; vec3D p2norm = triTranslated.p[1]; vec3D p3norm = triTranslated.p[2];
 		normalizeVector(&p1norm); normalizeVector(&p2norm); normalizeVector(&p3norm);
-		p1norm = subtractVectors(p1norm, normalPre); p2norm = subtractVectors(p2norm, normalPre); p3norm = subtractVectors(p3norm, normalPre);
-		if (!((p1norm.x < 0 && p2norm.x < 0 && p3norm.x < 0) || (p1norm.x > 0 && p2norm.x > 0 && p3norm.x > 0)) || !((p1norm.y < 0 && p2norm.y < 0 && p3norm.y < 0) || (p1norm.y > 0 && p2norm.y > 0 && p3norm.y > 0)) || !((p1norm.z < 0 && p2norm.z < 0 && p3norm.z < 0) || (p1norm.z > 0 && p2norm.z > 0 && p3norm.z > 0))) {
+		if (dot(p1norm,p2norm) <= 0 && dot(p1norm, p3norm) <= 0) {
 			colliding = true;
 			testRed = 255;
 
-			//find compenent of distance along normal
-			float compDist = (dot(triRot.p[0], normalPre)) / dist(triRot.p[0]);
-			if (compDist <= .92 && compDist >= 0) {
-			}
-			//TODO: make this actually modify the velocity
 		}
 
 		//Rotate points around camera based on camera rotation
@@ -165,7 +150,7 @@ void  Renderer::Render(Graphics* gfx){
 			continue;
 
 		//Calculate Normals
-		vec3D normal;
+		vec3D normal, line1, line2;
 		line1 = subtractVectors(triRot.p[1], triRot.p[0]);
 		line2 = subtractVectors(triRot.p[2], triRot.p[0]);
 		normal.x = line1.y * line2.z - line1.z * line2.y;

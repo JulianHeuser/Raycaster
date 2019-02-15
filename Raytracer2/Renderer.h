@@ -20,7 +20,7 @@ class Renderer{
 	bool colliding = false;
 
 	//Variables for projection
-	float nearPlane = 0.1f;
+	float nearPlane = 0.0f;
 	float farPlane = 1000.0f;
 	float fov = 90.0f;
 	float aspectRatio = HEIGHT / WIDTH;
