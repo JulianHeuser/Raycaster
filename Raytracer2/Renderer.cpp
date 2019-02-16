@@ -125,17 +125,6 @@ void  Renderer::Render(Graphics* gfx){
 		triTranslated.p[1] = subtractVectors(tri.p[1], camPos);
 		triTranslated.p[2] = subtractVectors(tri.p[2], camPos);
 
-
-		//Collision Detection
-		float testRed = 0;
-		vec3D p1norm = triTranslated.p[0]; vec3D p2norm = triTranslated.p[1]; vec3D p3norm = triTranslated.p[2];
-		normalizeVector(&p1norm); normalizeVector(&p2norm); normalizeVector(&p3norm);
-		if (dot(p1norm,p2norm) <= 0 && dot(p1norm, p3norm) <= 0) {
-			colliding = true;
-			testRed = 255;
-
-		}
-
 		//Rotate points around camera based on camera rotation
 		triRot.p[0] = MultiplyMatrixValue(triTranslated.p[0], matRotY);
 		triRot.p[1] = MultiplyMatrixValue(triTranslated.p[1], matRotY);
@@ -145,9 +134,6 @@ void  Renderer::Render(Graphics* gfx){
 		triRot.p[1] = MultiplyMatrixValue(triRot.p[1], matRotX);
 		triRot.p[2] = MultiplyMatrixValue(triRot.p[2], matRotX);
 
-		//Don't draw tris behind the camera
-		if (triRot.p[0].z < nearPlane || triRot.p[1].z < nearPlane || triRot.p[2].z < nearPlane)
-			continue;
 
 		//Calculate Normals
 		vec3D normal, line1, line2;
@@ -157,6 +143,50 @@ void  Renderer::Render(Graphics* gfx){
 		normal.y = line1.z * line2.x - line1.x * line2.z;
 		normal.z = line1.x * line2.y - line1.y * line2.x;
 		normalizeVector(&normal);
+
+		//Collision Detection
+		float testRed = 0;
+
+		//Face 1 normal
+		vec3D nFace1, l1Face1, l2Face1;
+		l1Face1 = subtractVectors(triRot.p[1], triRot.p[0]);
+		l2Face1 = subtractVectors({ 0,0,0 }, triRot.p[0]);
+		nFace1.x = l1Face1.y * l2Face1.z - l1Face1.z * l2Face1.y;
+		nFace1.y = l1Face1.z * l2Face1.x - l1Face1.x * l2Face1.z;
+		nFace1.z = l1Face1.x * l2Face1.y - l1Face1.y * l2Face1.x;
+		normalizeVector(&nFace1);
+
+		//Face 2 normal
+		vec3D nFace2, l1Face2, l2Face2;
+		l1Face2 = subtractVectors(triRot.p[2], triRot.p[1]);
+		l2Face2 = subtractVectors({ 0,0,0 }, triRot.p[1]);
+		nFace2.x = l1Face2.y * l2Face2.z - l1Face2.z * l2Face2.y;
+		nFace2.y = l1Face2.z * l2Face2.x - l1Face2.x * l2Face2.z;
+		nFace2.z = l1Face2.x * l2Face2.y - l1Face2.y * l2Face2.x;
+		normalizeVector(&nFace2);
+
+		//Face 3 normal
+		vec3D nFace3, l1Face3, l2Face3;
+		l1Face3 = subtractVectors(triRot.p[0], triRot.p[2]);
+		l2Face3 = subtractVectors({ 0,0,0 }, triRot.p[2]);
+		nFace3.x = l1Face3.y * l2Face3.z - l1Face3.z * l2Face3.y;
+		nFace3.y = l1Face3.z * l2Face3.x - l1Face3.x * l2Face3.z;
+		nFace3.z = l1Face3.x * l2Face3.y - l1Face3.y * l2Face3.x;
+		normalizeVector(&nFace3);
+
+		//Find out if the camera is on the projection plane for the tri
+		if (dot(normal, nFace1) >= 0 && dot(normal, nFace2) >= 0 && dot(normal, nFace3) >= 0) {
+			//Simplified component calculation (u dot v)/|v|
+			float comp = -dot(triRot.p[0], normal) / 1;
+			if (comp < 2) {
+				testRed = 255;
+			}
+		}
+
+
+		//Don't draw tris behind the camera
+		if (triRot.p[0].z < nearPlane || triRot.p[1].z < nearPlane || triRot.p[2].z < nearPlane)
+			continue;
 
 		//Basic shading
 		float brightness = normal.x * lightDirRot.x + normal.y * lightDirRot.y + normal.z * lightDirRot.z;
