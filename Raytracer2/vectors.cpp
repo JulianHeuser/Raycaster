@@ -62,3 +62,10 @@ float dot(vec3D vec1, vec3D vec2) {
 float dist(vec3D vec) {
 	return sqrtf(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
 }
+
+bool vecIsZero(vec3D vec) {
+	if (vec.x == 0 && vec.y == 0 && vec.z == 0) {
+		return true;
+	}
+	return false;
+}

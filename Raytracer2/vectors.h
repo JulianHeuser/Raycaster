@@ -20,3 +20,5 @@ vec3D multiplyVector(vec3D vec, float mult);
 float dot(vec3D vec1, vec3D vec2);
 
 float dist(vec3D vec);
+
+bool vecIsZero(vec3D vec);

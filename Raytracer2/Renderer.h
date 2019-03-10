@@ -17,6 +17,8 @@ class Renderer{
 	mat4x4 matRotY;
 	mat4x4 matRotZ;
 
+	vec3D colDir = { 0 };
+
 	//Variables for projection
 	float nearPlane = 0.0f;
 	float farPlane = 1000.0f;
