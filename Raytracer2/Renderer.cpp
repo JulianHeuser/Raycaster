@@ -171,12 +171,15 @@ void  Renderer::Render(Graphics* gfx){
 		//Find out if the camera is on the projection plane for the tri
 		if (dot(normal, nFace1) >= 0 && dot(normal, nFace2) >= 0 && dot(normal, nFace3) >= 0) {
 			//Simplified component calculation (u dot v)/|v|
-			float comp = -dot(triTranslated.p[0], normal);
-			if (comp < .5f && comp >= -.5 && vecIsZero(colDir)) {
+			vec3D comparePoint = triTranslated.p[0];
+			normalizeVector(&comparePoint);
+			float comp = -dot(comparePoint, normal);
+			if (comp < .5f && comp > -.5f && vecIsZero(colDir)) {
 				testRed = 255;
 				//colDir = multiplyVector(normal, comp);//multiplyVector(normal2, -dot(triTranslated.p[0], normal2));
-				colDir = multiplyVector(normal, .5f- comp);
-
+				colDir = multiplyVector(normal, .5f - fabs(comp));
+				colDir = colDir;
+				velocity = { 0 };
 			}
 		}
 
