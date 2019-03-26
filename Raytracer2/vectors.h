@@ -8,7 +8,7 @@ struct vec3D {
 	float x, y, z;
 };
 
-void normalizeVector(vec3D *vec);
+vec3D normalizeVector(vec3D vec);
 vec3D MultiplyMatrixValue(vec3D i, mat4x4 &m);
 
 vec3D subtractVectors(vec3D a, vec3D b);

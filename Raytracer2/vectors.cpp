@@ -1,11 +1,12 @@
 #include "vectors.h"
 #include <math.h>
 
-void normalizeVector(vec3D *vec) {
-	float length = sqrtf(vec->x*vec->x + vec->y*vec->y + vec->z*vec->z);
-	vec->x /= length;
-	vec->y /= length;
-	vec->z /= length;
+vec3D normalizeVector(vec3D vec) {
+	float length = sqrtf(vec.x*vec.x + vec.y*vec.y + vec.z*vec.z);
+	vec.x /= length;
+	vec.y /= length;
+	vec.z /= length;
+	return vec;
 }
 
 vec3D MultiplyMatrixValue(vec3D i, mat4x4 &m) {

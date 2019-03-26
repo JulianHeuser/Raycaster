@@ -57,10 +57,19 @@ void Renderer::Update(){
 		velocity.y -= .01f * sin(camRot.x);
 	}
 
-	velocity = divideVector(velocity, 1.1f);
+	velocity = divideVector(velocity, 1.1f);	//Friction
+
+	
+	if (!vecIsZero(colDir)) {
+		vec3D colDirNorm = normalizeVector(colDir);
+
+		float perpDist = dot(multiplyVector(colDirNorm,1), normalizeVector(velocity));
 
 
-	camPos = addVectors(addVectors(camPos, velocity), colDir);
+		velocity = addVectors(velocity, multiplyVector(colDirNorm, fabs(perpDist) * dist(velocity)));
+	}
+
+	camPos = addVectors(camPos, velocity);
 	colDir = { 0 };
 
 	if (GetAsyncKeyState(VK_LEFT)) {
@@ -136,7 +145,7 @@ void  Renderer::Render(Graphics* gfx){
 		normal.x = line1.y * line2.z - line1.z * line2.y;
 		normal.y = line1.z * line2.x - line1.x * line2.z;
 		normal.z = line1.x * line2.y - line1.y * line2.x;
-		normalizeVector(&normal);
+		normal = normalizeVector(normal);
 
 		//Collision Detection
 		float testRed = 0;
@@ -148,7 +157,7 @@ void  Renderer::Render(Graphics* gfx){
 		nFace1.x = l1Face1.y * l2Face1.z - l1Face1.z * l2Face1.y;
 		nFace1.y = l1Face1.z * l2Face1.x - l1Face1.x * l2Face1.z;
 		nFace1.z = l1Face1.x * l2Face1.y - l1Face1.y * l2Face1.x;
-		normalizeVector(&nFace1);
+		nFace1 = normalizeVector(nFace1);
 
 		//Face 2 normal
 		vec3D nFace2, l1Face2, l2Face2;
@@ -157,7 +166,7 @@ void  Renderer::Render(Graphics* gfx){
 		nFace2.x = l1Face2.y * l2Face2.z - l1Face2.z * l2Face2.y;
 		nFace2.y = l1Face2.z * l2Face2.x - l1Face2.x * l2Face2.z;
 		nFace2.z = l1Face2.x * l2Face2.y - l1Face2.y * l2Face2.x;
-		normalizeVector(&nFace2);
+		nFace2 = normalizeVector(nFace2);
 
 		//Face 3 normal
 		vec3D nFace3, l1Face3, l2Face3;
@@ -166,20 +175,18 @@ void  Renderer::Render(Graphics* gfx){
 		nFace3.x = l1Face3.y * l2Face3.z - l1Face3.z * l2Face3.y;
 		nFace3.y = l1Face3.z * l2Face3.x - l1Face3.x * l2Face3.z;
 		nFace3.z = l1Face3.x * l2Face3.y - l1Face3.y * l2Face3.x;
-		normalizeVector(&nFace3);
+		nFace3 = normalizeVector(nFace3);
 
 		//Find out if the camera is on the projection plane for the tri
 		if (dot(normal, nFace1) >= 0 && dot(normal, nFace2) >= 0 && dot(normal, nFace3) >= 0) {
 			//Simplified component calculation (u dot v)/|v|
 			vec3D comparePoint = triTranslated.p[0];
-			normalizeVector(&comparePoint);
+			comparePoint = normalizeVector(comparePoint);
 			float comp = -dot(comparePoint, normal);
 			if (comp < .5f && comp > -.5f && vecIsZero(colDir)) {
 				testRed = 255;
 				//colDir = multiplyVector(normal, comp);//multiplyVector(normal2, -dot(triTranslated.p[0], normal2));
 				colDir = multiplyVector(normal, .5f - fabs(comp));
-				colDir = colDir;
-				velocity = { 0 };
 			}
 		}
 
@@ -200,7 +207,7 @@ void  Renderer::Render(Graphics* gfx){
 		normal.x = line1.y * line2.z - line1.z * line2.y;
 		normal.y = line1.z * line2.x - line1.x * line2.z;
 		normal.z = line1.x * line2.y - line1.y * line2.x;
-		normalizeVector(&normal);
+		normal = normalizeVector(normal);
 
 
 		//Don't draw tris behind the camera
